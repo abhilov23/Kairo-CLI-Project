@@ -1,0 +1,3 @@
+module.exports=[53770,a=>{"use strict";var b=a.i(18398);a.s(["default",0,function(){return(0,b.jsx)("div",{className:"flex min-h-screen items-center justify-center bg-background",children:(0,b.jsxs)("div",{className:"flex flex-col items-center gap-4 text-center",children:[(0,b.jsx)("div",{className:"h-8 w-8 animate-spin rounded-full border-2 border-foreground border-t-transparent"}),(0,b.jsx)("p",{className:"text-sm text-muted-foreground",children:"Authenticating KairoCLI..."})]})})}])},78476,a=>{a.n(a.i(53770))}];
+
+//# sourceMappingURL=apps_website_src_app_auth_cli_loading_tsx_098lho6._.js.map
