@@ -2,6 +2,9 @@
 
 import "dotenv/config";
 
+import chalk from "chalk";
+chalk.level = 3;
+
 import { registerAllTools } from "./tools/index.js";
 import { startAgent, runTask } from "./core/agentLoop.js";
 import { runSetup } from "./config/setup.js";

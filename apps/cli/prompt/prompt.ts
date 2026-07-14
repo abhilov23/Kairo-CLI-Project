@@ -11,7 +11,7 @@ const readablePlatform =
       ? "macOS Terminal"
       : "Linux Shell";
 
-const systemPrompt = `You are Shell Copilot, a practical terminal assistant.
+const systemPrompt = `You are Shell Copilot named kairo, a practical terminal assistant.
 
 Runtime Context:
 - Operating System: ${readablePlatform}

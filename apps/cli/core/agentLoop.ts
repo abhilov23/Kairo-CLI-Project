@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { getClient } from "../providers/getClient.js";
 import { streamResponse } from "./streamHandler.js";
 import { executeToolCalls } from "./toolExecutor.js";
@@ -9,15 +10,20 @@ import { syncSession } from "./syncSessions.js";
 import {
   getUserInput,
   printBanner,
+  printUser,
+  printAssistant,
+  printTool,
   printSuccess,
+  showThinking,
+  hideThinking,
+  showWalk,
+  getPrompt,
 } from "../ui/ui.js";
 import {
   loadSessionMessages,
   loadSessionState,
   saveSessionMessages,
 } from "../runtime/sessionManager.js";
-
-// ─── Auth context injection ──────────────────────────────────────
 
 async function enrichPromptWithAuth(basePrompt: string): Promise<string> {
   const authSession = await loadAuthSession();
@@ -37,8 +43,6 @@ async function enrichPromptWithAuth(basePrompt: string): Promise<string> {
   );
 }
 
-// ─── Shared agent loop ───────────────────────────────────────────
-
 async function agentLoop(
   client: any,
   model: string,
@@ -46,27 +50,40 @@ async function agentLoop(
   safetyCheck?: (tc: ToolCallResult) => Promise<boolean>,
 ): Promise<void> {
   while (true) {
+    showThinking();
+
     const { fullContent, toolCalls } = await streamResponse(client, model, messages);
 
-    // Push assistant response into messages
+    hideThinking();
+
     messages.push({
       role: "assistant",
       content: fullContent || null,
       tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
     });
 
+    if (fullContent) {
+      printAssistant(fullContent);
+    }
+
     if (toolCalls.length === 0) {
-      return; // Normal text response — done
+      return;
+    }
+
+    for (const tc of toolCalls) {
+      printTool(tc.function.name, "running");
     }
 
     await executeToolCalls(toolCalls, messages, safetyCheck);
+
+    for (const tc of toolCalls) {
+      printTool(tc.function.name, "done");
+    }
   }
 }
 
-// ─── Interactive session ─────────────────────────────────────────
-
 export async function startAgent() {
-  const { client, model } = getClient();
+  const { client, model, provider } = getClient();
 
   const enrichedPrompt = await enrichPromptWithAuth(systemPrompt);
   const messages: any[] = [{ role: "system", content: enrichedPrompt }];
@@ -84,31 +101,38 @@ export async function startAgent() {
   printBanner();
   printSuccess("Type /help for commands. Type exit to quit.");
 
+  // Animate mascot walking in
+  await showWalk();
+
   while (true) {
-    const promptLabel = `You (${process.cwd()}) > `;
+    const promptLabel = getPrompt(process.cwd());
     const userInput = await getUserInput(promptLabel);
 
     if (!userInput.trim()) continue;
 
     if (userInput.trim() === "exit") {
-      await saveSessionMessages(messages, {
-        execution: { turnCount, lastToolName, lastError: null, lastUpdatedAt: new Date().toISOString() },
-        workspace: { cwd: process.cwd(), lastUpdatedAt: new Date().toISOString() },
-      });
+      try {
+        await saveSessionMessages(messages, {
+          execution: { turnCount, lastToolName, lastError: null, lastUpdatedAt: new Date().toISOString() },
+          workspace: { cwd: process.cwd(), lastUpdatedAt: new Date().toISOString() },
+        });
+      } catch { /* silent */ }
 
-      // Push session data to website for dashboard
-      const config = getClient();
-      const firstUserMsg = messages.find((m: any) => m.role === "user");
-      const title = firstUserMsg?.content?.substring(0, 80) || "Kairo Session";
-      await syncSession({
-        provider: config.provider,
-        model: config.model,
-        tokenCount: 0,
-        title,
-        workspace: process.cwd(),
-      }, 5_000);
+      try {
+        const config = getClient();
+        const firstUserMsg = messages.find((m: any) => m.role === "user");
+        const title = firstUserMsg?.content?.substring(0, 80) || "Kairo Session";
+        await syncSession({
+          provider: config.provider,
+          model: config.model,
+          tokenCount: 0,
+          title,
+          workspace: process.cwd(),
+        }, 5_000);
+      } catch { /* silent */ }
 
-      break;
+      console.log(chalk.cyan("\n Goodbye!"));
+      process.exit(0);
     }
 
     if (userInput.startsWith("/") || userInput === "clear" || userInput === "cls") {
@@ -120,6 +144,7 @@ export async function startAgent() {
     messages.push({ role: "user", content: userInput });
     turnCount += 1;
 
+    printUser(userInput);
     await agentLoop(client, model, messages);
 
     await saveSessionMessages(messages, {
@@ -129,8 +154,6 @@ export async function startAgent() {
   }
 }
 
-// ─── Single-task (non‑interactive) mode ──────────────────────────
-
 export async function runTask(task: string) {
   const { client, model } = getClient();
   const enrichedPrompt = await enrichPromptWithAuth(systemPrompt);
@@ -139,5 +162,7 @@ export async function runTask(task: string) {
     { role: "user", content: task },
   ];
 
+  showThinking();
   await agentLoop(client, model, messages);
+  hideThinking();
 }
