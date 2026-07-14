@@ -1,0 +1,55 @@
+$ next build
+▲ Next.js 16.2.7 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 29.1s
+  Running TypeScript ...
+  Finished TypeScript in 47s ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/27) ...
+  Generating static pages using 15 workers (6/27) 
+  Generating static pages using 15 workers (13/27) 
+  Generating static pages using 15 workers (20/27) 
+✓ Generating static pages using 15 workers (27/27) in 3.5s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/auth/cli-session
+├ ƒ /api/auth/device
+├ ƒ /api/auth/device/confirm
+├ ƒ /api/auth/device/token
+├ ƒ /api/auth/signup
+├ ƒ /api/config/sync
+├ ƒ /api/sessions
+├ ƒ /api/uploadthing
+├ ƒ /api/user/profile
+├ ƒ /api/user/profile/image
+├ ○ /auth
+├ ƒ /auth/cli
+├ ○ /cli/verify
+├ ○ /contact
+├ ƒ /dashboard
+├ ƒ /dashboard/keys
+├ ƒ /dashboard/profile
+├ ƒ /dashboard/sessions
+├ ƒ /dashboard/usage
+├ ○ /docs
+├ ○ /docs/commands
+├ ○ /docs/config
+├ ○ /docs/providers
+├ ○ /features
+├ ○ /login
+├ ○ /opengraph-image
+└ ○ /signup
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

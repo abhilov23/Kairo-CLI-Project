@@ -14,7 +14,6 @@ import {
   runDoctor,
 } from "./core/cliCommands.js";
 
-// Register all tools at startup
 registerAllTools();
 
 // Detect --task flag

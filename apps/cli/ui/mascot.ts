@@ -47,7 +47,7 @@ export async function renderBanner(): Promise<string> {
   return out.join("\n");
 }
 
-// ─── Spinner (single line, no mascot art) ────────────────────────────
+// ─── Spinner  ────────────────────────────
 
 let spinnerTimer: ReturnType<typeof setInterval> | null = null;
 let spinnerLabel = "";
