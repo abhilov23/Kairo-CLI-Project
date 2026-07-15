@@ -2,7 +2,7 @@
 
 A terminal-native AI coding assistant built with TypeScript and the OpenAI SDK.
 
-KairoCLI runs as an interactive CLI agent with tool-calling capabilities — reading/writing files, executing commands, searching code, and managing git workflows — all from your terminal.
+KairoCLI runs as an interactive CLI agent with tool-calling capabilities — reading/writing files, executing commands, searching code, managing git workflows, and **spawning parallel worker agents** — all from your terminal.
 
 ---
 
@@ -17,7 +17,11 @@ https://github.com/user-attachments/assets/e95504c1-01e1-4f7d-9eea-ad753c23acb2
 - **Interactive terminal assistant** — conversational AI that can act on your codebase
 - **Multi-provider support** — OpenAI, Anthropic, Groq, NVIDIA, Ollama, or any OpenAI-compatible API (Custom)
 - **Streaming responses** — real-time buffered responses with markdown rendering via `marked-terminal`
-- **Tool-calling agent** — 13 tools for filesystem, shell, git, and search operations
+- **Orchestrator + worker agent architecture** — primary agent spawns parallel sub-agents for complex, multi-file tasks
+- **Parallel subagent execution** — multiple `spawn_agent` calls in one turn run simultaneously via `Promise.all`
+- **Live agent status panel** — in-place terminal panel showing all running agents, tasks, elapsed time, and completion status
+- **Full toolset for sub-agents** — spawned workers get all 14 tools (read, write, search, execute, git, etc.)
+- **Tool-calling agent** — 14 tools for filesystem, shell, git, and search operations
 - **Safety system** — dangerous commands (`rm -rf`, `format`, `git reset --hard`, etc.) and protected files (`.env`, `package.json`, `pnpm-lock.yaml`) require interactive confirmation
 - **Runtime session persistence** — conversation history, execution state, task state, and workspace state saved across sessions (up to 200 messages with history trimming)
 - **Workspace-aware execution** — tracks current working directory and execution state
@@ -49,10 +53,10 @@ kairo/
 │   ├── safety.ts          # Dangerous command patterns & protected file detection
 │   ├── streamHandler.ts   # Streaming response with tool call assembly from delta chunks
 │   ├── syncSessions.ts    # Pushes CLI sessions to the website dashboard API
-│   ├── toolExecutor.ts    # Tool execution with safety checks, spinner, and error handling
+│   ├── toolExecutor.ts    # Parallel tool execution with safety checks and panel integration
 │   └── types.ts           # TypeScript types for streaming deltas and tool calls
-├── prompt/                # System prompt defining agent behavior
-│   └── prompt.ts          # "Shell Copilot" system prompt with platform-aware instructions
+├── prompt/                # System prompt defining orchestrator + worker behavior
+│   └── prompt.ts          # Primary orchestrator prompt + BASE_WORKER_PROMPT for sub-agents
 ├── providers/             # Provider definitions and client initialization
 │   ├── getClient.ts       # OpenAI client creation from config
 │   └── providerMap.ts     # Provider definitions (base URLs, env vars, default models)
@@ -61,8 +65,8 @@ kairo/
 │   ├── sessionManager.ts  # Persistent session with message serialization & trimming
 │   ├── taskState.ts
 │   └── workspaceState.ts
-├── tests/                 # Vitest test suite
-│   ├── agentLoop.test.ts
+├── tests/                 # Vitest test suite (120+ tests)
+│   ├── agentLoop.test.ts  # Stream handler, tool executor, agent integration
 │   ├── auth.test.ts       # Auth manager read/write/clear tests
 │   ├── config.test.ts     # Config write/read/validation
 │   ├── login.test.ts      # Login flow tests
@@ -71,7 +75,9 @@ kairo/
 │   └── tools.test.ts      # Tool execution (read, list, time)
 ├── tools/                 # Tool registry and individual tool implementations
 │   ├── registry.ts        # Zod-based tool registry with OpenAI schema generation
-│   ├── index.ts           # Registers all 13 tools
+│   ├── index.ts           # Registers all tools
+│   ├── spawnAgent.ts      # Spawns parallel worker agents using @openai/agents
+│   ├── workerTools.ts     # 14 tool wrappers for workers (read/write/search/exec/git)
 │   ├── changeDirectory.ts
 │   ├── currentDirectory.ts
 │   ├── diffPreview.ts     # Unified diff generation via `diff` library
@@ -87,8 +93,9 @@ kairo/
 │   └── writeFile.ts       # File creation with directory auto-creation
 ├── ui/                    # Terminal UI
 │   ├── book.ts            # Book-style layout: headers, code blocks, status bar, markdown renderer
-│   ├── mascot.ts          # 6-line ASCII mascot with moods + spinner + walk animation
+│   ├── mascot.ts          # Braille-animated spinner for thinking/working states
 │   ├── render.ts          # Markdown rendering with marked-terminal
+│   ├── subagentPanel.ts   # Live in-place status panel for parallel sub-agents
 │   └── ui.ts              # Banner, headers, input prompt, and colored output helpers
 ├── scripts/               # Utilities
 │   └── e2e-test.mjs       # E2E test harness for the login flow
@@ -231,21 +238,22 @@ node dist/index.js
 
 ## Available Tools
 
-| Tool               | Description                              |
-|--------------------|------------------------------------------|
-| `get_time`         | Get current system date and time         |
-| `execute_command`  | Run a terminal command (PowerShell)      |
-| `current_directory`| Get current working directory            |
-| `list_directory`   | List files and folders (JSON output)     |
-| `read_file`        | Read file contents                       |
-| `search_text`      | Recursive text search with context       |
-| `change_directory` | Change working directory                 |
-| `write_file`       | Write text to a file (auto-creates dirs) |
-| `replace_in_file`  | Targeted text replacement in a file      |
-| `run_script`       | Run package manager scripts (`pnpm dev`) |
-| `git_status`       | Show git repository status               |
-| `git_diff`         | Show diff for modified files             |
-| `diff_preview`     | Show unified diff preview for changes    |
+| Tool               | Description                                              |
+|--------------------|----------------------------------------------------------|
+| `get_time`         | Get current system date and time                         |
+| `execute_command`  | Run a terminal command (PowerShell)                      |
+| `current_directory`| Get current working directory                            |
+| `list_directory`   | List files and folders (JSON output)                     |
+| `read_file`        | Read file contents                                       |
+| `search_text`      | Recursive text search with context                       |
+| `change_directory` | Change working directory                                 |
+| `write_file`       | Write text to a file (auto-creates dirs)                 |
+| `replace_in_file`  | Targeted text replacement in a file                      |
+| `run_script`       | Run package manager scripts (`pnpm dev`)                 |
+| `git_status`       | Show git repository status                               |
+| `git_diff`         | Show diff for modified files                             |
+| `diff_preview`     | Show unified diff preview for changes                    |
+| `spawn_agent`      | Spawn parallel worker agents for multi-file investigation|
 
 ---
 
@@ -280,9 +288,25 @@ When a dangerous command or protected file is detected, KairoCLI displays the ac
 
 ## Agent Behavior
 
-The agent runs as **Shell Copilot** with platform-aware instructions:
+KairoCLI uses a **primary orchestrator → worker** architecture:
 
-- **Windows-aware** — prefers PowerShell-compatible commands, avoids bash-only syntax
+### Orchestrator
+
+- Platform-aware — prefers PowerShell-compatible commands, avoids bash-only syntax
+- Delegates work to sub-agents for large or parallel tasks
+- All 14 tools available
+
+### Worker Sub-agents
+
+- Spawned via `spawn_agent` tool with a focused task description
+- **Run in parallel** — multiple `spawn_agent` calls in the same turn execute simultaneously via `Promise.all`
+- Receive the full toolset (14 tools) — can read, write, search, execute commands, and run scripts
+- Cannot spawn further sub-agents (reserved for the orchestrator)
+- Results stream back to the orchestrator for synthesis
+- **Live status panel** shows all running agents, their tasks, elapsed time, and completion status
+
+### Execution Model
+
 - **Tool-calling native** — uses native API tool-calling (no pseudo-code output); gathers context with read-only tools before writing files
 - **Response style** — concise, bullet-pointed instructions, code blocks for commands, natural conversational responses
 - **Prefer `run_script`** — uses `run_script` tool over `execute_command` for package manager workflows
@@ -337,11 +361,11 @@ Auth sessions are stored in `~/.terminal-agent/auth.json`. Session data can be s
 
 - **TypeScript** (v6) — strict mode, ES2022 target, NodeNext module resolution
 - **OpenAI SDK** (v6) — streaming chat completions with tool calling
+- **@openai/agents** (v0.13) — agent orchestration for parallel worker sub-agents
 - **Zod** (v4) — runtime parameter validation + JSON Schema generation via `zod-to-json-schema`
 - **Chalk** / **Boxen** — terminal styling and banners
 - **Marked** / **marked-terminal** — markdown rendering in the terminal
 - **Diff** — unified diff generation for diff previews
-- **Ora** — spinner UI during tool execution
 - **Dotenv** — environment variable loading from `.env`
 - **Vitest** (v4) — test runner
 - **Prettier** — code formatting
@@ -355,9 +379,9 @@ Auth sessions are stored in `~/.terminal-agent/auth.json`. Session data can be s
 pnpm test
 ```
 
-The test suite covers:
+The test suite covers (120+ tests):
 - **Stream handler** — text-only responses, single/multiple tool call assembly from delta chunks, combined content + tool calls, empty streams
-- **Tool executor** — execution flow, cancellation via safety checks, error handling, multi-tool processing with partial failures
+- **Tool executor** — execution flow, cancellation via safety checks, error handling, multi-tool processing with partial failures, parallel execution
 - **Agent loop integration** — end-to-end text and tool call cycles
 - **Tool registry** — OpenAI schema generation, parameter validation, type coercion
 - **Config** — write/read with optional fields, custom providers, missing file handling
