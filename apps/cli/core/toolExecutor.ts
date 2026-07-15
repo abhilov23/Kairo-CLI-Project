@@ -6,7 +6,7 @@ import {
   isProtectedFile,
 } from "./safety.js";
 import chalk from "chalk";
-import { showWorking, hideThinking, showWalk } from "../ui/ui.js";
+import { showWorking, hideThinking } from "../ui/ui.js";
 
 export interface ToolExecutionResult {
   cancelled: boolean;

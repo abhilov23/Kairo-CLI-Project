@@ -12,6 +12,8 @@ import { runScript } from "./runScript.js";
 import { gitStatus } from "./gitStatus.js";
 import { gitDiff } from "./gitDiff.js";
 import { diffPreview } from "./diffPreview.js";
+import {spawnAgent} from "./spawnAgent.js";
+
 
 export function registerAllTools() {
   registry.register(getTime);
@@ -27,4 +29,5 @@ export function registerAllTools() {
   registry.register(gitStatus);
   registry.register(gitDiff);
   registry.register(diffPreview);
+  registry.register(spawnAgent);
 }

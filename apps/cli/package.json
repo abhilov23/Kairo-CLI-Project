@@ -20,6 +20,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@openai/agents": "^0.13.3",
     "boxen": "^8.0.1",
     "chalk": "^5.6.2",
     "diff": "^9.0.0",

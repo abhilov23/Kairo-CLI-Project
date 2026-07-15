@@ -4,7 +4,7 @@ import { streamResponse } from "./streamHandler.js";
 import { executeToolCalls } from "./toolExecutor.js";
 import { ToolCallResult } from "./types.js";
 import { handleInternalCommand } from "./commandRouter.js";
-import systemPrompt from "../prompt/prompt.js";
+import { systemPrompt } from "../prompt/prompt.js";
 import { loadAuthSession } from "../config/authManager.js";
 import { syncSession } from "./syncSessions.js";
 import {
@@ -16,7 +16,6 @@ import {
   printSuccess,
   showThinking,
   hideThinking,
-  showWalk,
   getPrompt,
 } from "../ui/ui.js";
 import {
@@ -98,11 +97,8 @@ export async function startAgent() {
   let turnCount = session.execution.turnCount ?? 0;
   let lastToolName: string | null = session.execution.lastToolName ?? null;
 
-  printBanner();
+  printBanner(provider, model);
   printSuccess("Type /help for commands. Type exit to quit.");
-
-  // Animate mascot walking in
-  await showWalk();
 
   while (true) {
     const promptLabel = getPrompt(process.cwd());
