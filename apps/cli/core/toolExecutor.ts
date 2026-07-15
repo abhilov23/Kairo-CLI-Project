@@ -36,43 +36,51 @@ async function checkSafety(tc: ToolCallResult): Promise<boolean> {
   return true;
 }
 
-export async function executeToolCall(
+async function executeToolCallInternal(
   tc: ToolCallResult,
   messages: any[],
-  safetyCheck?: (tc: ToolCallResult) => Promise<boolean>,
-): Promise<ToolExecutionResult> {
+): Promise<void> {
   try {
-    const checkFn = safetyCheck ?? checkSafety;
-    const proceed = await checkFn(tc);
-    if (!proceed) {
-      console.log(chalk.red(`  ✗ ${tc.function.name} cancelled`));
-      messages.push({
-        role: "tool",
-        tool_call_id: tc.id,
-        content: JSON.stringify({ error: "Command cancelled by user" }),
-      });
-      return { cancelled: true };
-    }
-
     const args = JSON.parse(tc.function.arguments);
-    showWorking();
     const result = await registry.execute(tc.function.name, args);
-    hideThinking();
     messages.push({
       role: "tool",
       tool_call_id: tc.id,
       content: JSON.stringify(result),
     });
-    return { cancelled: false };
   } catch (err) {
-    hideThinking();
     console.log(chalk.red(`  ✗ ${tc.function.name} failed`));
     messages.push({
       role: "tool",
       tool_call_id: tc.id,
       content: JSON.stringify({ error: String(err) }),
     });
+  }
+}
+
+export async function executeToolCall(
+  tc: ToolCallResult,
+  messages: any[],
+  safetyCheck?: (tc: ToolCallResult) => Promise<boolean>,
+): Promise<ToolExecutionResult> {
+  const checkFn = safetyCheck ?? checkSafety;
+  const proceed = await checkFn(tc);
+  if (!proceed) {
+    console.log(chalk.red(`  ✗ ${tc.function.name} cancelled`));
+    messages.push({
+      role: "tool",
+      tool_call_id: tc.id,
+      content: JSON.stringify({ error: "Command cancelled by user" }),
+    });
+    return { cancelled: true };
+  }
+
+  showWorking();
+  try {
+    await executeToolCallInternal(tc, messages);
     return { cancelled: false };
+  } finally {
+    hideThinking();
   }
 }
 
@@ -81,7 +89,37 @@ export async function executeToolCalls(
   messages: any[],
   safetyCheck?: (tc: ToolCallResult) => Promise<boolean>,
 ): Promise<void> {
+  if (toolCalls.length === 0) return;
+
+  const checkFn = safetyCheck ?? checkSafety;
+
+  const active: ToolCallResult[] = [];
+
   for (const tc of toolCalls) {
-    await executeToolCall(tc, messages, safetyCheck);
+    const proceed = await checkFn(tc);
+    if (!proceed) {
+      console.log(chalk.red(`  ✗ ${tc.function.name} cancelled`));
+      messages.push({
+        role: "tool",
+        tool_call_id: tc.id,
+        content: JSON.stringify({ error: "Command cancelled by user" }),
+      });
+    } else {
+      active.push(tc);
+    }
+  }
+
+  if (active.length === 0) return;
+
+  const hasSpawnAgent = active.some(tc => tc.function.name === "spawn_agent");
+
+  if (!hasSpawnAgent) {
+    showWorking();
+  }
+
+  await Promise.all(active.map(tc => executeToolCallInternal(tc, messages)));
+
+  if (!hasSpawnAgent) {
+    hideThinking();
   }
 }

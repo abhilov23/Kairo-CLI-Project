@@ -3,6 +3,8 @@ import { Agent, Runner } from "@openai/agents";
 import { OpenAIProvider } from "@openai/agents";
 import { z } from "zod";
 import { loadConfig } from "../config/configManager.js";
+import { subagentPanel } from "../ui/subagentPanel.js";
+import { workerTools } from "./workerTools.js";
 
 export const spawnAgent = {
   name: "spawn_agent",
@@ -22,30 +24,40 @@ export const spawnAgent = {
     task: string;
     instructions?: string;
   }) => {
+    const agentId = subagentPanel.register(task);
+
     let workerInstructions = BASE_WORKER_PROMPT;
     if (instructions) {
       workerInstructions += `\n\n# Specialization\n${instructions}`;
     }
 
-    const config = loadConfig();
-    const provider = new OpenAIProvider({
-      apiKey: config.apiKey,
-      baseURL: config.baseURL,
-    });
+    try {
+      const config = loadConfig();
+      const provider = new OpenAIProvider({
+        apiKey: config.apiKey,
+        baseURL: config.baseURL,
+      });
 
-    const runner = new Runner({
-      modelProvider: provider,
-      model: config.model,
-      tracingDisabled: true,
-    });
+      const runner = new Runner({
+        modelProvider: provider,
+        model: config.model,
+        tracingDisabled: true,
+      });
 
-    const worker = new Agent({
-      name: "Worker",
-      instructions: workerInstructions,
-    });
+      const worker = new Agent({
+        name: "Worker",
+        instructions: workerInstructions,
+        tools: workerTools,
+      });
 
-    const result = await runner.run(worker, task);
+      const result = await runner.run(worker, task);
+      const output = result.finalOutput ?? "(no output)";
 
-    return result.finalOutput ?? "(no output)";
+      subagentPanel.complete(agentId, output);
+      return output;
+    } catch (err) {
+      subagentPanel.error(agentId, String(err));
+      throw err;
+    }
   },
 };

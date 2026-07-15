@@ -70,13 +70,17 @@ async function agentLoop(
     }
 
     for (const tc of toolCalls) {
-      printTool(tc.function.name, "running");
+      if (tc.function.name !== "spawn_agent") {
+        printTool(tc.function.name, "running");
+      }
     }
 
     await executeToolCalls(toolCalls, messages, safetyCheck);
 
     for (const tc of toolCalls) {
-      printTool(tc.function.name, "done");
+      if (tc.function.name !== "spawn_agent") {
+        printTool(tc.function.name, "done");
+      }
     }
   }
 }

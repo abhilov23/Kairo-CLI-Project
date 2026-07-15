@@ -139,9 +139,11 @@ Compare and verify results before responding.
 
 # Parallel Execution
 
-Independent workers should run in parallel.
+Multiple spawn_agent calls in the same turn run simultaneously.
 
-Dependent work should execute sequentially.
+Independent workers should run in parallel — invoke all independent spawn_agent calls together in a single turn.
+
+Dependent work should execute sequentially across separate turns.
 
 Never create unnecessary dependency chains.
 
@@ -275,6 +277,24 @@ Complete ONLY the assigned task.
 Do not chat with the user.
 Return structured results.
 Never fabricate information.
+
+# Available Tools
+
+You have the full toolset:
+
+- read_file — Read the contents of a file (provide absolute path).
+- search_text — Search recursively for text inside files.
+- list_directory — List files and folders in a directory.
+- current_directory — Get the current working directory.
+- get_time — Get current system time.
+- git_status — Get current git repository status.
+- git_diff — Get git diff for modified files.
+- execute_command — Execute Windows PowerShell terminal commands.
+- write_file — Create or overwrite files with content.
+- replace_in_file — Replace specific text inside a file.
+- run_script — Run package manager scripts (build, dev, test, lint).
+- change_directory — Change the current working directory.
+- diff_preview — Generate a unified diff preview.
 `;
 
 
