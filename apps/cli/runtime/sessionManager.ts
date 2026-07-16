@@ -94,6 +94,14 @@ export async function loadSessionMessages(): Promise<any[]> {
   return session.messages;
 }
 
+export async function clearSessionFile(): Promise<void> {
+  try {
+    await fs.unlink(SESSION_FILE);
+  } catch {
+    // file doesn't exist, nothing to clear
+  }
+}
+
 export async function saveSessionMessages(
   messages: any[],
   patch?: Partial<Pick<SessionState, "task" | "execution" | "workspace">>

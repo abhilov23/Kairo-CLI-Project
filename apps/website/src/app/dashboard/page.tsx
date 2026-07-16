@@ -53,7 +53,9 @@ export default async function DashboardPage() {
     take: 10,
   });
 
-  const totalSessions = await prisma.kairoSession.count({ where: { userId } });
+  const totalSessions = await prisma.kairoSession.count({
+    where: { userId },
+  });
   const totalTokens = await prisma.kairoSession.aggregate({
     where: { userId },
     _sum: { tokenCount: true },
@@ -177,6 +179,7 @@ export default async function DashboardPage() {
             {recentSessions.map((s, i) => (
               <SessionCard
                 key={s.id}
+                id={s.id}
                 title={s.title}
                 provider={s.provider}
                 model={s.model}

@@ -10,7 +10,7 @@ export function getClient(): { client: OpenAI; model: string; provider: string }
   let baseURL: string;
   let model: string;
 
-  if (config.provider === "custom") {
+  if (config.provider === "custom" || config.provider === "kairo-gateway") {
     if (!config.baseURL) throw new Error("Custom provider requires baseURL in config. Run: kairo setup");
     if (!config.model) throw new Error("Custom provider requires model in config. Run: kairo setup");
     apiKey = config.apiKey ?? "custom";

@@ -2,6 +2,7 @@ import open from "open";
 
 import { saveAuthSession, loadAuthSession, clearAuthSession } from "../config/authManager.js";
 import { syncSession } from "./syncSessions.js";
+import { clearSessionFile } from "../runtime/sessionManager.js";
 
 const LOCALHOST_API = "http://localhost:3000/api/auth/device";
 const TOKEN_API = "http://localhost:3000/api/auth/device/token";
@@ -195,27 +196,52 @@ export async function logoutCommand() {
   // (token must still be valid for the sessions request)
   const token = session.jwtToken ?? session.accessToken;
   if (token) {
+    const errors: string[] = [];
+
+    // Delete the current chat session so it doesn't appear on the website
+    if (session.currentSessionId) {
+      try {
+        const res = await fetch(
+          `${AUTH_WEBSITE}api/sessions?id=${session.currentSessionId}`,
+          { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },
+        );
+        if (!res.ok) errors.push(`failed to remove current session (${res.status})`);
+      } catch {
+        errors.push("could not reach website to remove current session");
+      }
+    }
+
+    // Delete the CLI login marker session
     try {
       const url = session.loginSessionId
         ? `${AUTH_WEBSITE}api/sessions?id=${session.loginSessionId}`
         : `${AUTH_WEBSITE}api/sessions`;
-      await fetch(url, {
+      const res = await fetch(url, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+      if (!res.ok && res.status !== 404) errors.push(`website session cleanup failed (${res.status})`);
     } catch {
-      // Network failure — still clear locally
+      errors.push("could not reach website to clean up login session");
     }
 
+    // Revoke the token
     try {
-      await fetch(`${AUTH_WEBSITE}api/auth/cli-session`, {
+      const res = await fetch(`${AUTH_WEBSITE}api/auth/cli-session`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+      if (!res.ok) errors.push(`token revocation failed (${res.status})`);
     } catch {
-      // Network failure — still clear locally
+      errors.push("could not reach website to revoke token");
+    }
+
+    if (errors.length > 0) {
+      console.warn(`\n⚠️  ${errors.join("; ")}`);
     }
   }
+
+  await clearSessionFile();
 
   const cleared = await clearAuthSession();
   if (cleared) {

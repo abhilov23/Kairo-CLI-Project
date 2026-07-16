@@ -16,9 +16,16 @@ function buildToolCallsFromDelta(deltaToolCalls: ToolCallDelta[]): ToolCallResul
   return Object.values(acc).filter((tc) => tc.id && tc.function.name);
 }
 
+export interface TokenUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+}
+
 export interface StreamResult {
   fullContent: string;
   toolCalls: ToolCallResult[];
+  tokenUsage: TokenUsage | null;
 }
 
 export async function streamResponse(
@@ -36,6 +43,7 @@ export async function streamResponse(
 
   let fullContent = "";
   const rawDeltaToolCalls: ToolCallDelta[] = [];
+  let tokenUsage: TokenUsage | null = null;
 
   for await (const chunk of stream) {
     const delta = chunk.choices[0]?.delta;
@@ -49,9 +57,17 @@ export async function streamResponse(
         rawDeltaToolCalls.push(tc);
       }
     }
+
+    if (chunk.usage) {
+      tokenUsage = {
+        prompt_tokens: chunk.usage.prompt_tokens ?? 0,
+        completion_tokens: chunk.usage.completion_tokens ?? 0,
+        total_tokens: chunk.usage.total_tokens ?? 0,
+      };
+    }
   }
 
   const toolCalls = buildToolCallsFromDelta(rawDeltaToolCalls);
 
-  return { fullContent, toolCalls };
+  return { fullContent, toolCalls, tokenUsage };
 }

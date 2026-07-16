@@ -29,6 +29,11 @@ export const PROVIDER_MAP = {
     apiKeyEnv: null,
     defaultModel: null,
   },
+  "kairo-gateway": {
+    baseURL: null,
+    apiKeyEnv: null,
+    defaultModel: null,
+  },
 } as const;
 
 export type ProviderName = keyof typeof PROVIDER_MAP;

@@ -29,6 +29,22 @@
         "nxtPnextauth": "nxtPnextauth"
       },
       "namedRegex": "^/api/auth/(?<nxtPnextauth>.+?)(?:/)?$"
+    },
+    {
+      "page": "/api/sessions/[id]",
+      "regex": "^/api/sessions/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/sessions/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/dashboard/sessions/[id]",
+      "regex": "^/dashboard/sessions/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/dashboard/sessions/(?<nxtPid>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -87,10 +103,22 @@
       "namedRegex": "^/api/auth/signup(?:/)?$"
     },
     {
+      "page": "/api/chat",
+      "regex": "^/api/chat(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/chat(?:/)?$"
+    },
+    {
       "page": "/api/config/sync",
       "regex": "^/api/config/sync(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/config/sync(?:/)?$"
+    },
+    {
+      "page": "/api/gateway/config",
+      "regex": "^/api/gateway/config(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/gateway/config(?:/)?$"
     },
     {
       "page": "/api/sessions",
@@ -147,10 +175,10 @@
       "namedRegex": "^/dashboard(?:/)?$"
     },
     {
-      "page": "/dashboard/keys",
-      "regex": "^/dashboard/keys(?:/)?$",
+      "page": "/dashboard/chat",
+      "regex": "^/dashboard/chat(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/dashboard/keys(?:/)?$"
+      "namedRegex": "^/dashboard/chat(?:/)?$"
     },
     {
       "page": "/dashboard/profile",

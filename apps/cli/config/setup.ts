@@ -1,6 +1,9 @@
 import { saveConfig, loadConfigAsync } from "./configManager.js";
 import { getUserInput } from "../ui/ui.js";
+import { loadAuthSession } from "../config/authManager.js";
 import type { ProviderName } from "../providers/providerMap.js";
+
+const GATEWAY_API = "http://localhost:3000/api/gateway/config";
 
 const PROVIDER_CHOICES: { key: string; name: ProviderName; label: string }[] = [
   { key: "1", name: "openai", label: "OpenAI" },
@@ -9,6 +12,7 @@ const PROVIDER_CHOICES: { key: string; name: ProviderName; label: string }[] = [
   { key: "4", name: "nvidia", label: "NVIDIA" },
   { key: "5", name: "ollama", label: "Ollama" },
   { key: "6", name: "custom", label: "Custom" },
+  { key: "7", name: "kairo-gateway", label: "Kairo Gateway (requires login)" },
 ];
 
 export async function runSetup() {
@@ -32,7 +36,37 @@ export async function runSetup() {
   }
 
   const provider: ProviderName = entry.name;
-  const isCustom = provider === "custom";
+  const isCustom = provider === "custom" || provider === "kairo-gateway";
+
+  // Kairo Gateway: fetch config from website
+  if (provider === "kairo-gateway") {
+    const auth = await loadAuthSession();
+    if (!auth?.jwtToken) {
+      console.log("\nYou must be logged in to use Kairo Gateway. Run /login first.\n");
+      return;
+    }
+
+    try {
+      const res = await fetch(GATEWAY_API, {
+        headers: { Authorization: `Bearer ${auth.jwtToken}` },
+      });
+      if (!res.ok) {
+        console.log("\nFailed to fetch gateway config. Is the website running and GATEWAY_API_KEY set?\n");
+        return;
+      }
+      const gw = await res.json() as { apiKey: string; baseURL: string; model: string };
+      saveConfig({ provider, apiKey: gw.apiKey, baseURL: gw.baseURL, model: gw.model });
+      console.log(`\nConfiguration saved successfully.\n`);
+      console.log(`Provider: Kairo Gateway`);
+      console.log(`Model: ${gw.model}`);
+      console.log(`Base URL: ${gw.baseURL}`);
+      console.log("");
+      return;
+    } catch {
+      console.log("\nCould not reach the website. Make sure the Kairo website is running on localhost:3000.\n");
+      return;
+    }
+  }
 
   let baseURL: string | undefined;
   let apiKey: string | undefined;

@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   History,
-  Key,
   BarChart3,
   User,
   Menu,
@@ -16,14 +15,15 @@ import {
   Terminal,
   ChevronLeft,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/theme-toggle";
 
 const SIDEBAR_LINKS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Chat", href: "/dashboard/chat", icon: MessageSquare },
   { label: "Sessions", href: "/dashboard/sessions", icon: History },
-  { label: "API Keys", href: "/dashboard/keys", icon: Key },
   { label: "Usage", href: "/dashboard/usage", icon: BarChart3 },
   { label: "Profile", href: "/dashboard/profile", icon: User },
 ];

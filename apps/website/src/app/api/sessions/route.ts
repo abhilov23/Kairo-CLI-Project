@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     title?: string;
     workspace?: string;
     createdAt?: string;
+    messages?: unknown[];
   };
 
   try {
@@ -77,9 +78,23 @@ export async function POST(request: NextRequest) {
       model: body.model!,
       tokenCount: body.tokenCount!,
       workspace: body.workspace ?? null,
+      messages: (body.messages as any) ?? undefined,
       createdAt: parsedCreatedAt ?? new Date(),
     },
   });
+
+  // Also log usage for granular per-request tracking
+  if (body.tokenCount! > 0) {
+    await prisma.usageLog.create({
+      data: {
+        userId,
+        kairoSessionId: session.id,
+        tokens: body.tokenCount!,
+        provider: body.provider!,
+        model: body.model!,
+      },
+    });
+  }
 
   return NextResponse.json(session, { status: 201 });
 }
@@ -105,6 +120,16 @@ export async function GET(request: NextRequest) {
     orderBy: { createdAt: "desc" },
     take: limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    select: {
+      id: true,
+      userId: true,
+      title: true,
+      provider: true,
+      model: true,
+      tokenCount: true,
+      workspace: true,
+      createdAt: true,
+    },
   });
 
   const hasMore = sessions.length > limit;

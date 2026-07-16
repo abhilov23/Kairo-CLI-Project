@@ -3,6 +3,8 @@ export type ExecutionState = {
   lastToolName: string | null;
   lastError: string | null;
   lastUpdatedAt: string;
+  totalTokens: number;
+  lastPromptTokens: number;
 };
 
 export function createInitialExecutionState(): ExecutionState {
@@ -11,5 +13,7 @@ export function createInitialExecutionState(): ExecutionState {
     lastToolName: null,
     lastError: null,
     lastUpdatedAt: new Date().toISOString(),
+    totalTokens: 0,
+    lastPromptTokens: 0,
   };
 }

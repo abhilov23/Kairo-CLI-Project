@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, Cpu, FileText, Terminal, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SessionCardProps {
+  id?: string;
   title: string;
   provider: string;
   model: string;
@@ -36,9 +38,12 @@ const PROVIDER_STYLES: Record<string, { bg: string; dot: string }> = {
   groq: { bg: "bg-orange-500/10 text-orange-500", dot: "bg-orange-500" },
   nvidia: { bg: "bg-blue-500/10 text-blue-500", dot: "bg-blue-500" },
   ollama: { bg: "bg-neutral-500/10 text-neutral-400", dot: "bg-neutral-400" },
+  custom: { bg: "bg-cyan-500/10 text-cyan-500", dot: "bg-cyan-500" },
+  "cli-login": { bg: "bg-rose-500/10 text-rose-500", dot: "bg-rose-500" },
 };
 
 export default function SessionCard({
+  id,
   title,
   provider,
   model,
@@ -52,6 +57,48 @@ export default function SessionCard({
     dot: "bg-violet-500",
   };
 
+  const card = (
+    <div className="p-4 pl-[17px]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-sm font-medium text-foreground group-hover:text-violet-500/90 transition-colors duration-200">
+            {title}
+          </h3>
+
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-medium",
+                style.bg,
+              )}
+            >
+              <span className={cn("h-1.5 w-1.5 rounded-full", style.dot)} />
+              <Cpu className="h-2.5 w-2.5" />
+              {provider}/{model}
+            </span>
+
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/60">
+              <Zap className="h-2.5 w-2.5" />
+              {tokenCount.toLocaleString()} tokens
+            </span>
+
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/60">
+              <Clock className="h-2.5 w-2.5" />
+              {timeAgo(createdAt)}
+            </span>
+          </div>
+
+          {workspace && (
+            <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/40">
+              <Terminal className="h-2.5 w-2.5 shrink-0" />
+              <span className="truncate">{workspace}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -63,59 +110,19 @@ export default function SessionCard({
       }}
       className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-violet-500/20 hover:shadow-[0_0_24px_-8px_rgba(139,92,246,0.15)]"
     >
-      {/* Accent left border */}
       <div
         className={cn(
           "absolute left-0 top-0 h-full w-0.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
           style.dot,
         )}
       />
-
-      <div className="p-4 pl-[17px]">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            {/* Title */}
-            <h3 className="truncate text-sm font-medium text-foreground group-hover:text-violet-500/90 transition-colors duration-200">
-              {title}
-            </h3>
-
-            {/* Meta row */}
-            <div className="mt-2.5 flex flex-wrap items-center gap-2">
-              {/* Provider + Model badge */}
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-medium",
-                  style.bg,
-                )}
-              >
-                <span className={cn("h-1.5 w-1.5 rounded-full", style.dot)} />
-                <Cpu className="h-2.5 w-2.5" />
-                {provider}/{model}
-              </span>
-
-              {/* Token count */}
-              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/60">
-                <Zap className="h-2.5 w-2.5" />
-                {tokenCount.toLocaleString()} tokens
-              </span>
-
-              {/* Timestamp */}
-              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/60">
-                <Clock className="h-2.5 w-2.5" />
-                {timeAgo(createdAt)}
-              </span>
-            </div>
-
-            {/* Workspace */}
-            {workspace && (
-              <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/40">
-                <Terminal className="h-2.5 w-2.5 shrink-0" />
-                <span className="truncate">{workspace}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {id ? (
+        <Link href={`/dashboard/sessions/${id}`} className="block cursor-pointer">
+          {card}
+        </Link>
+      ) : (
+        card
+      )}
     </motion.div>
   );
 }

@@ -22,6 +22,7 @@ const PROVIDER_COLORS: Record<string, { bar: string; bg: string; text: string; l
   groq: { bar: "bg-orange-500", bg: "bg-orange-500/10", text: "text-orange-500", light: "bg-orange-500/20" },
   nvidia: { bar: "bg-blue-500", bg: "bg-blue-500/10", text: "text-blue-500", light: "bg-blue-500/20" },
   ollama: { bar: "bg-neutral-500", bg: "bg-neutral-500/10", text: "text-neutral-400", light: "bg-neutral-500/20" },
+  custom: { bar: "bg-cyan-500", bg: "bg-cyan-500/10", text: "text-cyan-500", light: "bg-cyan-500/20" },
 };
 
 export default function UsagePage() {
@@ -39,7 +40,7 @@ export default function UsagePage() {
         const res = await fetch("/api/sessions?limit=100");
         if (res.ok) {
           const data = await res.json();
-          const sessions = data.sessions ?? [];
+          const sessions = (data.sessions ?? []).filter((s: any) => s.provider !== "cli-login");
 
           const byProvider: Record<string, UsageStat> = {};
           const byDay: Record<string, number> = {};

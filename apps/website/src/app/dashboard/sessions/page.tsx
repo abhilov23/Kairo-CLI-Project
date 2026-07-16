@@ -15,14 +15,18 @@ interface Session {
   createdAt: string;
 }
 
-const PROVIDER_PILLS = [
+const STATIC_PILLS: { value: string; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "openai", label: "OpenAI" },
-  { value: "anthropic", label: "Anthropic" },
-  { value: "groq", label: "Groq" },
-  { value: "nvidia", label: "NVIDIA" },
-  { value: "ollama", label: "Ollama" },
 ];
+
+const PROVIDER_LABELS: Record<string, string> = {
+  openai: "OpenAI",
+  anthropic: "Anthropic",
+  groq: "Groq",
+  nvidia: "NVIDIA",
+  ollama: "Ollama",
+  custom: "Custom",
+};
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -32,6 +36,18 @@ export default function SessionsPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  // Build provider pills from data + known labels
+  const availableProviders = [...new Set(sessions.map((s) => s.provider))];
+  const providerPills = [
+    ...STATIC_PILLS,
+    ...Object.keys(PROVIDER_LABELS)
+      .filter((p) => availableProviders.includes(p))
+      .map((p) => ({ value: p, label: PROVIDER_LABELS[p] })),
+    ...availableProviders
+      .filter((p) => !PROVIDER_LABELS[p])
+      .map((p) => ({ value: p, label: p.charAt(0).toUpperCase() + p.slice(1) })),
+  ];
 
   useEffect(() => {
     document.title = "Sessions — Kairo";
@@ -45,7 +61,7 @@ export default function SessionsPage() {
         const res = await fetch("/api/sessions?limit=20");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setSessions(data.sessions);
+        setSessions(data.sessions ?? []);
         setCursor(data.nextCursor);
         setHasMore(!!data.nextCursor);
       } catch {
@@ -64,7 +80,7 @@ export default function SessionsPage() {
       const res = await fetch(`/api/sessions?cursor=${cursor}&limit=20`);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      setSessions((prev) => [...prev, ...data.sessions]);
+      setSessions((prev) => [...prev, ...(data.sessions ?? [])]);
       setCursor(data.nextCursor);
       setHasMore(!!data.nextCursor);
     } catch {
@@ -87,9 +103,6 @@ export default function SessionsPage() {
 
     return matchesSearch && matchesProvider;
   });
-
-  // Get available providers from data
-  const availableProviders = [...new Set(sessions.map((s) => s.provider))];
 
   return (
     <div className="space-y-6">
@@ -139,7 +152,7 @@ export default function SessionsPage() {
         {/* Filter pills */}
         <div className="flex flex-wrap items-center gap-1.5">
           <Filter className="h-3.5 w-3.5 text-muted-foreground/40 mr-1" />
-          {PROVIDER_PILLS.map((pill) => {
+          {providerPills.map((pill) => {
             const isActive = providerFilter === pill.value;
             const isDisabled =
               pill.value !== "all" && !availableProviders.includes(pill.value);
@@ -191,7 +204,7 @@ export default function SessionsPage() {
               <p className="text-xs text-muted-foreground/40">
                 {filtered.length} session{filtered.length !== 1 ? "s" : ""}
                 {providerFilter !== "all"
-                  ? ` with ${PROVIDER_PILLS.find((p) => p.value === providerFilter)?.label ?? providerFilter}`
+                  ? ` with ${providerPills.find((p) => p.value === providerFilter)?.label ?? providerFilter}`
                   : ""}
                 {search ? ` matching "${search}"` : ""}
               </p>
@@ -199,6 +212,7 @@ export default function SessionsPage() {
             {filtered.map((s, i) => (
               <SessionCard
                 key={s.id}
+                id={s.id}
                 title={s.title}
                 provider={s.provider}
                 model={s.model}

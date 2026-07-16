@@ -12,6 +12,7 @@ export type AuthSession = {
   deviceCode?: string;
   createdAt: string;
   loginSessionId?: string;
+  currentSessionId?: string;
 };
 
 export function getAuthFile(): string {
@@ -32,6 +33,16 @@ export async function loadAuthSession(): Promise<AuthSession | null> {
   } catch {
     return null;
   }
+}
+
+export async function updateAuthSession(
+  patch: Partial<AuthSession>,
+): Promise<AuthSession | null> {
+  const current = await loadAuthSession();
+  if (!current) return null;
+  const updated = { ...current, ...patch };
+  await saveAuthSession(updated);
+  return updated;
 }
 
 export async function clearAuthSession(): Promise<boolean> {

@@ -94,6 +94,7 @@ model KairoSession {
   model      String     // e.g. "gpt-4o", "claude-sonnet-4"
   tokenCount Int        @default(0)
   workspace  String?    // directory path where session was created
+  messages   Json?      // full conversation messages array
   createdAt  DateTime   @default(now())
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   usageLogs  UsageLog[]
