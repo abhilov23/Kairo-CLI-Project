@@ -157,6 +157,12 @@
       "namedRegex": "^/auth/cli(?:/)?$"
     },
     {
+      "page": "/changelog",
+      "regex": "^/changelog(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/changelog(?:/)?$"
+    },
+    {
       "page": "/cli/verify",
       "regex": "^/cli/verify(?:/)?$",
       "routeKeys": {},
@@ -173,12 +179,6 @@
       "regex": "^/dashboard(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/dashboard(?:/)?$"
-    },
-    {
-      "page": "/dashboard/chat",
-      "regex": "^/dashboard/chat(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/dashboard/chat(?:/)?$"
     },
     {
       "page": "/dashboard/profile",
@@ -247,10 +247,22 @@
       "namedRegex": "^/opengraph\\-image(?:/)?$"
     },
     {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
       "page": "/signup",
       "regex": "^/signup(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/signup(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
     }
   ],
   "dataRoutes": [],

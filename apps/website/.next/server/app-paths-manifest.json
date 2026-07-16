@@ -18,9 +18,9 @@
   "/api/user/profile/route": "app/api/user/profile/route.js",
   "/auth/cli/page": "app/auth/cli/page.js",
   "/auth/page": "app/auth/page.js",
+  "/changelog/page": "app/changelog/page.js",
   "/cli/verify/page": "app/cli/verify/page.js",
   "/contact/page": "app/contact/page.js",
-  "/dashboard/chat/page": "app/dashboard/chat/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/profile/page": "app/dashboard/profile/page.js",
   "/dashboard/sessions/[id]/page": "app/dashboard/sessions/[id]/page.js",
@@ -35,5 +35,7 @@
   "/login/page": "app/login/page.js",
   "/opengraph-image/route": "app/opengraph-image/route.js",
   "/page": "app/page.js",
-  "/signup/page": "app/signup/page.js"
+  "/privacy/page": "app/privacy/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/terms/page": "app/terms/page.js"
 }

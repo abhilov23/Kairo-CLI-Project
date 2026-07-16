@@ -15,7 +15,7 @@ const NAV_LINKS = [
   { label: "About", href: "/about" },
   {
     label: "GitHub",
-    href: "https://github.com/abhilov23/KairoCLI",
+    href: "https://github.com/abhilov23/Kairo-CLI-Project",
     external: true,
   },
 ];

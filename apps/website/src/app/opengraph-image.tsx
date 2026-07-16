@@ -180,7 +180,7 @@ export default async function Image() {
                 color: "#fafafa",
               }}
             >
-              npm install -g kairo-cli
+              npm install -g @abhilov/kairo
             </span>
             <span
               style={{
@@ -263,7 +263,7 @@ export default async function Image() {
           >
             <div style={{ display: "flex" }}>
               <span style={{ color: "rgba(255,255,255,0.3)", marginRight: 8 }}>$</span>
-              <span style={{ color: "#fafafa" }}>kairo review src/auth.ts</span>
+              <span style={{ color: "#fafafa" }}>kairo --task "review src/auth.ts"</span>
             </div>
             <div style={{ display: "flex", color: "rgba(52,211,153,0.7)" }}>
               Analyzing src/auth.ts...
@@ -271,10 +271,8 @@ export default async function Image() {
             <div style={{ display: "flex", color: "rgba(52,211,153,0.7)" }}>
               Found 3 issues
             </div>
-            <div style={{ display: "flex", color: "rgba(255,255,255,0.4)" }}>
-              <span style={{ marginRight: 8 }}>→</span>
-              <span style={{ color: "#a78bfa" }}>kairo fix</span>
-              <span style={{ marginLeft: 4 }}>to apply changes</span>
+            <div style={{ display: "flex", color: "rgba(52,211,153,0.7)" }}>
+              ✓ Review complete
             </div>
           </div>
         </div>

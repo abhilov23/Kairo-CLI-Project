@@ -412,5 +412,5 @@ GitHub Actions runs on every push and PR to `main`:
 
 ## Repository
 
-- **GitHub:** https://github.com/abhilov23/KairoCLI
+- **GitHub:** https://github.com/abhilov23/Kairo-CLI-Project
 - **npm:** https://www.npmjs.com/package/@abhilov/kairo

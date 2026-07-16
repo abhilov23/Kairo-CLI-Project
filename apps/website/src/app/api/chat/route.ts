@@ -52,6 +52,18 @@ export async function POST(request: NextRequest) {
     openai = new OpenAI({ apiKey, baseURL });
     model = process.env.GATEWAY_MODEL || "gpt-4o-mini";
     provider = "free-chat";
+
+    const userMessages = (body.messages?.filter((m) => m.role === "user") ?? []).length;
+    if (userMessages > 5) {
+      return NextResponse.json({ error: "Message limit reached (max 5 per conversation)" }, { status: 429 });
+    }
+
+    const totalUsed = await prisma.usageLog.count({
+      where: { userId, provider: "free-chat" },
+    });
+    if (totalUsed >= 25) {
+      return NextResponse.json({ error: "Session limit reached (max 5 sessions). Contact admin to reset." }, { status: 429 });
+    }
   }
 
   const encoder = new TextEncoder();

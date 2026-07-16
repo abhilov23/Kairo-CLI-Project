@@ -23,7 +23,7 @@ const FOOTER_LINKS = [
   {
     label: "Community",
     links: [
-      { label: "GitHub", href: "https://github.com/abhilov23/KairoCLI" },
+      { label: "GitHub", href: "https://github.com/abhilov23/Kairo-CLI-Project" },
       { label: "NPM", href: "https://www.npmjs.com/package/@abhilov/kairo" },
     ],
   },

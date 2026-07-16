@@ -22,98 +22,75 @@ export default function TerminalWindow({
   title = "terminal",
   lines,
   className,
-  typingSpeed = 30,
+  typingSpeed = 15,
   prompt = "~/kairo",
 }: TerminalWindowProps) {
-  const [visibleLines, setVisibleLines] = useState<number>(0);
+  const [visibleLines, setVisibleLines] = useState(0);
   const [typedChars, setTypedChars] = useState<Record<number, number>>({});
   const [isComplete, setIsComplete] = useState(false);
 
-  // Start animation
   useEffect(() => {
-    const totalDelay = lines.reduce((sum, line) => sum + (line.delay ?? 800), 0);
+    setVisibleLines(0);
+    setTypedChars({});
+    setIsComplete(false);
+
     let currentLine = 0;
-    const charTimeouts: ReturnType<typeof setTimeout>[] = [];
-    let isCancelled = false;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    let cancelled = false;
 
-    const startTyping = () => {
-      if (isCancelled || currentLine >= lines.length) return;
+    const typeLine = () => {
+      if (cancelled || currentLine >= lines.length) return;
 
-      const lineDelay = lines[currentLine]?.delay ?? 800;
+      const line = lines[currentLine];
+      const delay = line.delay ?? 600;
 
-      const lineTimeout = setTimeout(() => {
-        if (isCancelled) return;
+      timeouts.push(setTimeout(() => {
+        if (cancelled) return;
 
-        setVisibleLines(() => currentLine + 1);
+        setVisibleLines(currentLine + 1);
         setTypedChars((prev) => ({ ...prev, [currentLine]: 0 }));
 
-        // Type out characters
-        const line = lines[currentLine];
         for (let i = 0; i <= line.text.length; i++) {
-          const charIndex = i;
-          charTimeouts.push(
-            setTimeout(
-              () => {
-                if (!isCancelled) {
-                  setTypedChars((prev) => ({ ...prev, [currentLine]: charIndex }));
-                }
-              },
-              (charIndex + 1) * typingSpeed,
-            ),
-          );
+          const ci = i;
+          timeouts.push(setTimeout(() => {
+            if (!cancelled) setTypedChars((prev) => ({ ...prev, [currentLine]: ci }));
+          }, (ci + 1) * typingSpeed));
         }
 
         currentLine++;
         if (currentLine < lines.length) {
-          charTimeouts.push(setTimeout(startTyping, totalDelay / lines.length + 300));
+          const nextDelay = lines[currentLine]?.delay ?? 600;
+          timeouts.push(setTimeout(typeLine, nextDelay + line.text.length * typingSpeed + 200));
         } else {
-          setTimeout(() => {
-            if (!isCancelled) setIsComplete(true);
-          }, 1000);
+          timeouts.push(setTimeout(() => { if (!cancelled) setIsComplete(true); }, 800));
         }
-      }, lineDelay);
-
-      charTimeouts.push(lineTimeout);
+      }, 0));
     };
 
-    const initialTimeout = setTimeout(startTyping, 500);
+    timeouts.push(setTimeout(typeLine, 300));
+
     return () => {
-      isCancelled = true;
-      clearTimeout(initialTimeout);
-      charTimeouts.forEach(clearTimeout);
+      cancelled = true;
+      timeouts.forEach(clearTimeout);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getTotalTypedChars = (lineIndex: number) => {
-    return typedChars[lineIndex] ?? 0;
-  };
+  }, [lines, typingSpeed]);
 
   return (
-    <div
-      className={cn(
-        "overflow-hidden rounded-xl border border-border/50 bg-[#0d1117] shadow-sm",
-        className,
-      )}
-    >
-      {/* Window header */}
+    <div className={cn("overflow-hidden rounded-xl border border-border/50 bg-[#0d1117] shadow-sm", className)}>
       <div className="flex items-center gap-2 border-b border-border/20 bg-[#161b22] px-4 py-2.5">
         <div className="flex items-center gap-1.5">
           <div className="h-3 w-3 rounded-full bg-red-500/70" />
           <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
           <div className="h-3 w-3 rounded-full bg-emerald-500/70" />
         </div>
-        <span className="ml-auto text-xs text-muted-foreground/50 font-mono">
-          {title}
-        </span>
-        <div className="ml-auto w-[52px]" /> {/* Spacer for centering */}
+        <span className="ml-auto text-xs text-muted-foreground/50 font-mono">{title}</span>
+        <div className="ml-auto w-[52px]" />
       </div>
 
-      {/* Terminal content */}
       <div className="overflow-x-auto p-4 sm:p-5 font-mono text-sm leading-relaxed">
-        {lines.map((line, lineIndex) => (
+        {lines.map((line, i) => (
           <div
-            key={lineIndex}
+            key={i}
             className={cn(
               "min-h-[1.5em]",
               line.type === "output" && "text-muted-foreground/80",
@@ -121,30 +98,25 @@ export default function TerminalWindow({
               line.type === "command" && "text-foreground",
             )}
           >
-            {lineIndex < visibleLines && (
+            {i < visibleLines && (
               <>
                 {line.type === "command" && (
                   <span className="text-emerald-400 select-none">
-                    {prompt}{" "}
-                    <span className="text-muted-foreground/40">$</span>{" "}
+                    {prompt} <span className="text-muted-foreground/40">$</span>{" "}
                   </span>
                 )}
-                {line.text.slice(0, getTotalTypedChars(lineIndex))}
-                {lineIndex === visibleLines - 1 &&
-                  !isComplete &&
-                  lineIndex === lines.length - 1 && (
-                    <motion.span
-                      animate={{ opacity: [1, 0] }}
-                      transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-                      className="ml-0.5 inline-block h-4 w-2 bg-foreground/70"
-                    />
-                  )}
+                {line.text.slice(0, typedChars[i] ?? line.text.length)}
+                {i === visibleLines - 1 && !isComplete && (
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                    className="ml-0.5 inline-block h-4 w-2 bg-foreground/70"
+                  />
+                )}
               </>
             )}
           </div>
         ))}
-
-        {/* Blinking cursor at end */}
         {isComplete && (
           <motion.span
             animate={{ opacity: [1, 0] }}

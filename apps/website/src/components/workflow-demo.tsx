@@ -15,14 +15,15 @@ const WORKFLOWS = [
       "Copy back",
       "Apply manually",
     ],
-    command: "kairo review .",
+    command: 'kairo --task "review git diff"',
     output: [
-      "Analyzing staged changes...",
+      "┃ Kairo — gpt-4o",
+      "────────────────────────────────────────────────",
       "Found 3 issues:",
       "  → Unhandled token refresh  [high]",
       "  → Weak password validation  [med]",
       "  → Missing rate limiting    [low]",
-      "Run: kairo fix to apply",
+      "✓ Review complete",
     ],
   },
   {
@@ -34,8 +35,10 @@ const WORKFLOWS = [
       "Repeat",
       "Lose context",
     ],
-    command: "kairo explain",
+    command: 'kairo --task "explain this error"',
     output: [
+      "┃ Kairo — gpt-4o",
+      "────────────────────────────────────────────────",
       "TypeError: Cannot read properties",
       "of undefined (reading 'map')",
       "",
@@ -53,14 +56,15 @@ const WORKFLOWS = [
       "Lose context",
       "Start over",
     ],
-    command: "kairo chat",
+    command: "kairo",
     output: [
-      "╭─ Continuing previous session...",
-      "│  Last topic: Refactoring auth",
-      "│  You asked about token management",
-      "╰─ Ready for follow-up",
-      "",
+      "┃ Kairo — gpt-4o",
+      "────────────────────────────────────────────────",
+      "  Continuing previous session",
+      "  Last topic: Refactoring auth",
       "  7 prior messages in context",
+      "",
+      "  Type /help for commands. Type exit to quit.",
     ],
   },
   {
@@ -72,15 +76,17 @@ const WORKFLOWS = [
       "Check CI",
       "Fix, repeat",
     ],
-    command: "kairo review .",
+    command: 'kairo --task "review git diff"',
     output: [
-      "Reviewing staged changes...",
+      "┃ Kairo — gpt-4o",
+      "────────────────────────────────────────────────",
       "+45 / -12 lines across 2 files",
       "",
       "Suggested commit message:",
       "  feat: add error boundary",
       "  to UserProfile component",
-      "Run: kairo commit",
+      "",
+      "  ✓ Review complete",
     ],
   },
 ];
@@ -107,7 +113,7 @@ export default function WorkflowDemo() {
           <h2 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-4xl">
             Less switching.
             <br />
-            <span className="bg-gradient-to-r from-violet-400 to-violet-200 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               More shipping.
             </span>
           </h2>
@@ -181,7 +187,7 @@ export default function WorkflowDemo() {
               >
                 <div className="relative h-full rounded-2xl">
                   {/* Violet radial glow behind card */}
-                  <div className="absolute -inset-4 bg-violet-500/[0.03] dark:bg-violet-500/5 rounded-3xl blur-2xl pointer-events-none" />
+                  <div className="absolute -inset-4 bg-cyan-500/[0.03] dark:bg-cyan-500/5 rounded-3xl blur-2xl pointer-events-none" />
 
                   <GlowingEffect
                     blur={0}
@@ -194,7 +200,7 @@ export default function WorkflowDemo() {
                     className="rounded-2xl"
                   />
 
-                  <div className="relative rounded-2xl border-x border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#0d1117] border-t-2 border-t-violet-500 p-6 sm:p-8">
+                  <div className="relative rounded-2xl border-x border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#0d1117] border-t-2 border-t-cyan-500 p-6 sm:p-8">
                     {/* Label */}
                     <div className="inline-flex items-center gap-1.5 rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 w-fit mb-4">
                       <Sparkle className="h-3 w-3 text-green-400" />
@@ -224,15 +230,17 @@ export default function WorkflowDemo() {
                         {workflow.output.map((line, li) => (
                           <div
                             key={li}
-                            className={
-                              line.startsWith("→")
-                                ? "text-violet-400/70"
-                                : line.startsWith("Run:")
-                                ? "text-emerald-400/60"
-                                : line.startsWith("│") || line.startsWith("╰") || line.startsWith("╭")
-                                ? "text-neutral-300"
-                                : "text-neutral-400"
-                            }
+               className={
+                               line.startsWith("→")
+                                 ? "text-cyan-400/70"
+                                 : line.startsWith("✓")
+                                 ? "text-emerald-400/60"
+                                 : line.startsWith("┃")
+                                 ? "text-emerald-400/80 font-semibold"
+                                 : line.startsWith("─")
+                                 ? "text-neutral-600"
+                                 : "text-neutral-400"
+                             }
                           >
                             {line || "\u00A0"}
                           </div>

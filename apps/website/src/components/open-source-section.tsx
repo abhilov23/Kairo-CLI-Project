@@ -41,7 +41,7 @@ export default function OpenSourceSection() {
                 className="h-10 rounded-xl bg-foreground text-background hover:bg-foreground/90 px-5 text-sm font-medium shadow-sm"
               >
                 <a
-                  href="https://github.com/abhilov23/KairoCLI"
+                  href="https://github.com/abhilov23/Kairo-CLI-Project"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -76,7 +76,7 @@ export default function OpenSourceSection() {
             className="relative"
           >
             {/* Glow */}
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-t from-violet-500/5 to-transparent opacity-40 blur-xl" />
+            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-t from-cyan-500/5 to-transparent opacity-40 blur-xl" />
             <div className="relative overflow-hidden rounded-2xl border border-border bg-[#0d1117] shadow-sm">
               {/* Terminal header */}
               <div className="flex items-center gap-1.5 border-b border-white/5 px-4 py-2.5">
@@ -86,7 +86,7 @@ export default function OpenSourceSection() {
                   <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/60" />
                 </div>
                 <span className="ml-auto text-[10px] text-white/30 font-mono">
-                  github.com/abhilov23/KairoCLI
+                  github.com/abhilov23/Kairo-CLI-Project
                 </span>
                 <div className="ml-auto w-[56px]" />
               </div>
@@ -99,13 +99,13 @@ export default function OpenSourceSection() {
                 </div>
                 <div>
                   <span className="text-white/30">$ </span>
-                  <span className="text-white/90">git clone https://github.com/abhilov23/KairoCLI</span>
+                  <span className="text-white/90">git clone https://github.com/abhilov23/Kairo-CLI-Project</span>
                 </div>
-                <div className="text-emerald-400/60">Cloning into &apos;KairoCLI&apos;...</div>
+                <div className="text-emerald-400/60">Cloning into &apos;Kairo-CLI-Project&apos;...</div>
                 <div className="text-emerald-400/60">Receiving objects: 100% (2.3 MB)</div>
                 <div className="mt-3">
                   <span className="text-white/30">$ </span>
-                  <span className="text-white/90">cd KairoCLI</span>
+                  <span className="text-white/90">cd Kairo-CLI-Project</span>
                 </div>
                 <div>
                   <span className="text-white/30">$ </span>
@@ -114,11 +114,11 @@ export default function OpenSourceSection() {
                 <div className="text-emerald-400/60">✓ Dependencies installed</div>
                 <div className="mt-3 pt-3 border-t border-white/5">
                   <span className="text-white/30">$ </span>
-                  <span className="text-emerald-400">kairo chat</span>
+                  <span className="text-emerald-400">kairo</span>
                 </div>
-                <div className="text-white/50">╭─ Welcome to Kairo</div>
-                <div className="text-white/50">│</div>
-                <div className="text-white/90">│  Let&apos;s build something great.</div>
+                <div className="text-emerald-400/80 font-semibold">┃ Kairo — gpt-4o</div>
+                <div className="text-white/50">────────────────────────────────────────────────</div>
+                <div className="text-white/90">  Let&apos;s build something great.</div>
                 <div className="inline-block h-3.5 w-2 animate-pulse bg-emerald-400/70 mt-1" />
               </div>
             </div>

@@ -19,15 +19,15 @@ const DOCS_SECTIONS = [
       { label: "kairo chat", href: "/docs/commands#chat" },
       { label: "kairo models", href: "/docs/commands#models" },
       { label: "kairo config", href: "/docs/commands#config" },
-      { label: "kairo help", href: "/docs/commands#help" },
+      { label: "kairo doctor", href: "/docs/commands#doctor" },
     ],
   },
   {
     label: "Configuration",
     links: [
       { label: "Overview", href: "/docs/config" },
-      { label: "Providers", href: "/docs/config#providers" },
-      { label: "Settings", href: "/docs/config#settings" },
+      { label: "Quick Reference", href: "/docs/config#quick-reference" },
+      { label: "Environment", href: "/docs/config#environment" },
       { label: "Environment", href: "/docs/config#environment" },
     ],
   },
@@ -74,7 +74,7 @@ export default function DocsSidebar() {
                       className={cn(
                         "block rounded-md px-3 py-1 text-sm transition-colors",
                         isActive
-                          ? "bg-violet-500/10 text-violet-600 dark:text-violet-400 font-medium"
+                          ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-medium"
                           : "text-muted-foreground hover:text-foreground",
                       )}
                     >

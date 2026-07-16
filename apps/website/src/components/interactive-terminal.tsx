@@ -13,26 +13,25 @@ interface TerminalLine {
 
 const DEMO_SESSIONS: Record<string, { command: string; lines: TerminalLine[] }> = {
   review: {
-    command: "kairo review src/auth.ts",
+    command: "kairo --task \"review src/auth.ts\"",
     lines: [
-      { type: "command" as const, text: "kairo review src/auth.ts", delay: 200 },
-      { type: "system" as const, text: "Analyzing src/auth.ts...", delay: 400 },
-      { type: "system" as const, text: "", delay: 80 },
+      { type: "command" as const, text: "kairo --task \"review src/auth.ts\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 400 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 80 },
       { type: "system" as const, text: "Found 3 issues:", delay: 300 },
       { type: "system" as const, text: "  1. Unhandled token refresh  [high]", delay: 150 },
       { type: "system" as const, text: "  2. Weak password validation  [med]", delay: 150 },
       { type: "system" as const, text: "  3. Missing rate limiting    [low]", delay: 150 },
       { type: "system" as const, text: "", delay: 80 },
-      { type: "system" as const, text: "Suggesting fixes...", delay: 300 },
-      { type: "system" as const, text: "  → kairo fix to apply all changes", delay: 200 },
+      { type: "system" as const, text: "✓ Review complete", delay: 300 },
     ],
   },
   debug: {
-    command: "kairo explain",
+    command: "kairo --task \"explain this error\"",
     lines: [
-      { type: "command" as const, text: "kairo explain", delay: 200 },
-      { type: "system" as const, text: "Reading error from clipboard...", delay: 300 },
-      { type: "system" as const, text: "", delay: 80 },
+      { type: "command" as const, text: "kairo --task \"explain this error\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 80 },
       { type: "system" as const, text: "TypeError: Cannot read properties", delay: 200 },
       { type: "system" as const, text: "of undefined (reading 'map')", delay: 150 },
       { type: "system" as const, text: "", delay: 80 },
@@ -44,33 +43,31 @@ const DEMO_SESSIONS: Record<string, { command: string; lines: TerminalLine[] }> 
     ],
   },
   git: {
-    command: "kairo review .",
+    command: "kairo --task \"review git diff\"",
     lines: [
-      { type: "command" as const, text: "kairo review .", delay: 200 },
-      { type: "system" as const, text: "Reviewing staged changes...", delay: 300 },
-      { type: "system" as const, text: "", delay: 80 },
+      { type: "command" as const, text: "kairo --task \"review git diff\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 80 },
       { type: "system" as const, text: "2 files changed, +45/-12 lines", delay: 250 },
       { type: "system" as const, text: "", delay: 80 },
       { type: "system" as const, text: "Suggested commit message:", delay: 250 },
       { type: "system" as const, text: "  feat: add error boundary to", delay: 150 },
       { type: "system" as const, text: "  UserProfile component", delay: 150 },
-      { type: "system" as const, text: "", delay: 80 },
-      { type: "system" as const, text: "Run kairo commit to apply", delay: 250 },
     ],
   },
   chat: {
-    command: "kairo chat",
+    command: "kairo",
     lines: [
-      { type: "command" as const, text: "kairo chat", delay: 200 },
-      { type: "system" as const, text: "╭─ Kairo — I'm ready", delay: 300 },
-      { type: "system" as const, text: "│", delay: 60 },
-      { type: "system" as const, text: "│  I can help you with:", delay: 200 },
-      { type: "system" as const, text: "│  • Code review & debugging", delay: 150 },
-      { type: "system" as const, text: "│  • Architecture discussions", delay: 150 },
-      { type: "system" as const, text: "│  • Git workflows & automation", delay: 150 },
-      { type: "system" as const, text: "│  • Database design & queries", delay: 150 },
-      { type: "system" as const, text: "│", delay: 60 },
-      { type: "system" as const, text: "╰─ What are we building?", delay: 300 },
+      { type: "command" as const, text: "kairo", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 60 },
+      { type: "system" as const, text: "  I can help you with:", delay: 200 },
+      { type: "system" as const, text: "  • Code review & debugging", delay: 150 },
+      { type: "system" as const, text: "  • Architecture discussions", delay: 150 },
+      { type: "system" as const, text: "  • Git workflows & automation", delay: 150 },
+      { type: "system" as const, text: "  • Database design & queries", delay: 150 },
+      { type: "system" as const, text: "", delay: 60 },
+      { type: "system" as const, text: "  Type /help for commands. Type exit to quit.", delay: 300 },
     ],
   },
 };
@@ -172,7 +169,7 @@ export default function InteractiveTerminal() {
       <div className="pointer-events-none absolute inset-0 bg-noise" />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-grid opacity-[0.02] dark:opacity-[0.03]" />
-        <div className="absolute top-1/3 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-500/5 to-transparent blur-3xl dark:from-violet-500/8" />
+        <div className="absolute top-1/3 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-cyan-500/5 to-transparent blur-3xl dark:from-cyan-500/8" />
       </div>
 
       <TracingBeam className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -225,7 +222,7 @@ export default function InteractiveTerminal() {
           className="relative"
         >
           {/* Glow */}
-          <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-violet-500/5 via-transparent to-transparent opacity-60 blur-2xl" />
+          <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent opacity-60 blur-2xl" />
 
           {/* Terminal window */}
           <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-[#0d1117] shadow-2xl">

@@ -18,9 +18,9 @@
   "/api/user/profile/route": "/api/user/profile",
   "/auth/cli/page": "/auth/cli",
   "/auth/page": "/auth",
+  "/changelog/page": "/changelog",
   "/cli/verify/page": "/cli/verify",
   "/contact/page": "/contact",
-  "/dashboard/chat/page": "/dashboard/chat",
   "/dashboard/page": "/dashboard",
   "/dashboard/profile/page": "/dashboard/profile",
   "/dashboard/sessions/[id]/page": "/dashboard/sessions/[id]",
@@ -35,5 +35,7 @@
   "/login/page": "/login",
   "/opengraph-image/route": "/opengraph-image",
   "/page": "/",
-  "/signup/page": "/signup"
+  "/privacy/page": "/privacy",
+  "/signup/page": "/signup",
+  "/terms/page": "/terms"
 }

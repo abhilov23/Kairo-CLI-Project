@@ -475,7 +475,7 @@ npm install -g @abhilov/kairo
 NVIDIA, OpenAI, Anthropic, Groq, Ollama
 
 ### Links
-- GitHub: https://github.com/abhilov23/KairoCLI
+- GitHub: https://github.com/abhilov23/Kairo-CLI-Project
 - npm: https://www.npmjs.com/package/@abhilov/kairo
 - Website: https://kairo.dev
 

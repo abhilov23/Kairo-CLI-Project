@@ -5,25 +5,20 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const TREE_LINES = [
   { indent: 0, text: "Kairo Architecture", type: "title" as const },
-  { indent: 0, text: "├── core/", type: "folder" as const },
-  { indent: 1, text: "├── session-manager", type: "file" as const, desc: "persistent context" },
-  { indent: 1, text: "├── context-engine", type: "file" as const, desc: "codebase awareness" },
-  { indent: 1, text: "└── command-router", type: "file" as const, desc: "plugin dispatch" },
-  { indent: 0, text: "├── providers/", type: "folder" as const },
-  { indent: 1, text: "├── openai       [gpt-4o]", type: "file" as const },
-  { indent: 1, text: "├── anthropic    [claude]", type: "file" as const },
-  { indent: 1, text: "├── google       [gemini]", type: "file" as const },
-  { indent: 1, text: "└── local        [ollama]", type: "file" as const },
-  { indent: 0, text: "├── integrations/", type: "folder" as const },
-  { indent: 1, text: "├── git          [vcs]", type: "file" as const },
-  { indent: 1, text: "├── github       [prs, issues]", type: "file" as const },
-  { indent: 1, text: "├── postgresql   [queries]", type: "file" as const },
-  { indent: 1, text: "└── mcp          [protocol]", type: "file" as const, badge: "soon" as const },
-  { indent: 0, text: "└── tools/", type: "folder" as const },
-  { indent: 1, text: "  ├── review     [audit]", type: "file" as const },
-  { indent: 1, text: "  ├── explain    [debug]", type: "file" as const },
-  { indent: 1, text: "  ├── fix        [auto]", type: "file" as const },
-  { indent: 1, text: "  └── chat       [interactive]", type: "file" as const },
+  { indent: 0, text: "├── apps/", type: "folder" as const },
+  { indent: 1, text: "├── cli/", type: "folder" as const },
+  { indent: 2, text: "├── core/", type: "folder" as const, desc: "agent loop, router, executor" },
+  { indent: 2, text: "├── providers/", type: "folder" as const, desc: "openai, anthropic, google, ollama" },
+  { indent: 2, text: "├── tools/", type: "folder" as const, desc: "17 file, git & shell tools" },
+  { indent: 2, text: "├── config/", type: "folder" as const, desc: "auth, setup, config manager" },
+  { indent: 2, text: "├── runtime/", type: "folder" as const, desc: "session, task, workspace state" },
+  { indent: 2, text: "├── ui/", type: "folder" as const, desc: "render, mascot, subagent panel" },
+  { indent: 2, text: "├── prompt/", type: "folder" as const, desc: "system prompt" },
+  { indent: 2, text: "└── tests/", type: "folder" as const, desc: "unit & e2e" },
+  { indent: 1, text: "└── website/", type: "folder" as const, desc: "Next.js docs & landing" },
+  { indent: 0, text: "├── packages/", type: "folder" as const, desc: "shared libraries" },
+  { indent: 0, text: "├── turbo.json", type: "file" as const, desc: "monorepo orchestration" },
+  { indent: 0, text: "└── pnpm-workspace.yaml", type: "file" as const, desc: "workspace config" },
 ];
 
 const FEATURES = [
@@ -33,14 +28,14 @@ const FEATURES = [
     description: "OpenAI, Anthropic, Google, local models",
   },
   {
-    label: "Integrations",
-    count: "12+",
-    description: "Git, GitHub, PostgreSQL, MCP, APIs",
+    label: "Tools",
+    count: "17+",
+    description: "File ops, git, shell, search, diff",
   },
   {
     label: "Commands",
-    count: "8+",
-    description: "Review, explain, fix, chat, config, agents",
+    count: "10+",
+    description: "Chat, review, explain, fix, agents, config",
   },
   {
     label: "Open Source",
@@ -58,7 +53,7 @@ export default function ArchitectureDiagram() {
       <div className="pointer-events-none absolute inset-0 bg-noise" />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-grid opacity-[0.02] dark:opacity-[0.03]" />
-        <div className="absolute top-1/2 right-0 h-[400px] w-[500px] -translate-y-1/2 rounded-full bg-gradient-to-l from-violet-500/5 to-transparent blur-3xl dark:from-violet-500/8" />
+        <div className="absolute top-1/2 right-0 h-[400px] w-[500px] -translate-y-1/2 rounded-full bg-gradient-to-l from-cyan-500/5 to-transparent blur-3xl dark:from-violet-500/8" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -89,7 +84,7 @@ export default function ArchitectureDiagram() {
             className="lg:col-span-3 relative"
           >
             {/* Glow behind terminal */}
-            <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-violet-500/5 via-transparent to-transparent opacity-60 blur-2xl" />
+            <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent opacity-60 blur-2xl" />
 
             {/* Terminal */}
             <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-[#0d1117] shadow-2xl">
@@ -124,11 +119,7 @@ export default function ArchitectureDiagram() {
                     {line.type === "file" && line.desc && (
                       <span className="text-white/25 ml-2"># {line.desc}</span>
                     )}
-                    {line.type === "file" && line.badge === "soon" && (
-                      <span className="ml-2 inline-flex items-center rounded-full border border-violet-500/20 bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-medium text-violet-400 uppercase tracking-wider">
-                        Soon
-                      </span>
-                    )}
+
                   </div>
                 ))}
 

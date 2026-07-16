@@ -15,14 +15,12 @@ import {
   Terminal,
   ChevronLeft,
   LogOut,
-  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/theme-toggle";
 
 const SIDEBAR_LINKS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Chat", href: "/dashboard/chat", icon: MessageSquare },
   { label: "Sessions", href: "/dashboard/sessions", icon: History },
   { label: "Usage", href: "/dashboard/usage", icon: BarChart3 },
   { label: "Profile", href: "/dashboard/profile", icon: User },
@@ -129,7 +127,7 @@ export default function DashboardSidebar() {
         {/* User area */}
         <div className="border-t border-border px-3 py-3">
           <div className="flex items-center gap-3 rounded-lg px-3 py-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-violet-600 text-[10px] font-bold text-white">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 text-[10px] font-bold text-white">
               {session?.user?.name?.charAt(0)?.toUpperCase() ?? "U"}
             </div>
             <div className="min-w-0 flex-1">

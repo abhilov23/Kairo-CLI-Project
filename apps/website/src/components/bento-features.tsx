@@ -15,15 +15,15 @@ const ITEMS = [
     description:
       "Kairo reviews your code for bugs, security vulnerabilities, and performance issues — all from a single command.",
     lines: [
-      { type: "command" as const, text: "kairo review src/auth.ts", delay: 200 },
-      { type: "system" as const, text: "Analyzing src/auth.ts...", delay: 400 },
-      { type: "system" as const, text: "", delay: 100 },
+      { type: "command" as const, text: "kairo --task \"review src/auth.ts\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 400 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 100 },
       { type: "system" as const, text: "Found 3 issues:", delay: 300 },
       { type: "system" as const, text: "  1. Unhandled token refresh  [high]", delay: 200 },
       { type: "system" as const, text: "  2. Weak password validation  [med]", delay: 200 },
       { type: "system" as const, text: "  3. Missing rate limiting    [low]", delay: 200 },
       { type: "system" as const, text: "", delay: 100 },
-      { type: "system" as const, text: "Run kairo fix to apply changes", delay: 300 },
+      { type: "system" as const, text: "✓ Review complete", delay: 300 },
     ],
     className: "md:col-span-2 md:row-span-1 lg:row-span-2",
   },
@@ -33,12 +33,14 @@ const ITEMS = [
     description:
       "Paste an error and Kairo explains what went wrong — with context from your codebase.",
     lines: [
-      { type: "command" as const, text: "kairo explain", delay: 200 },
+      { type: "command" as const, text: "kairo --task \"explain this error\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 100 },
       { type: "system" as const, text: "TypeError: Cannot read properties", delay: 300 },
       { type: "system" as const, text: "of undefined (reading 'map')", delay: 150 },
       { type: "system" as const, text: "", delay: 100 },
-      { type: "system" as const, text: "The API response is empty.", delay: 300 },
-      { type: "system" as const, text: "Add a fallback: data ?? []", delay: 250 },
+      { type: "system" as const, text: "Root cause: API response is empty.", delay: 300 },
+      { type: "system" as const, text: "Fix: data ?? []", delay: 250 },
     ],
     className: "",
   },
@@ -48,8 +50,9 @@ const ITEMS = [
     description:
       "Generate commit messages, review diffs, and analyze branches without leaving the terminal.",
     lines: [
-      { type: "command" as const, text: "kairo review .", delay: 200 },
-      { type: "system" as const, text: "Reviewing staged changes...", delay: 300 },
+      { type: "command" as const, text: "kairo --task \"review git diff\"", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 80 },
       { type: "system" as const, text: "+45 / -12 lines across 2 files", delay: 300 },
       { type: "system" as const, text: "", delay: 100 },
       { type: "system" as const, text: "Suggested commit:", delay: 200 },
@@ -64,10 +67,12 @@ const ITEMS = [
     description:
       "Works with OpenAI, Anthropic, Google, and local models. You choose what powers your workflow.",
     lines: [
-      { type: "command" as const, text: "kairo config set provider anthropic", delay: 200 },
+      { type: "command" as const, text: "kairo setup", delay: 200 },
+      { type: "system" as const, text: "┌─ Kairo Setup ────────────────────────────", delay: 200 },
+      { type: "system" as const, text: "│  Select AI Provider:", delay: 200 },
+      { type: "system" as const, text: "│    2. Anthropic", delay: 200 },
+      { type: "system" as const, text: "└──────────────────────────────────────────", delay: 200 },
       { type: "system" as const, text: "✓ Provider set to: anthropic", delay: 300 },
-      { type: "command" as const, text: "kairo config set model claude-sonnet-4", delay: 200 },
-      { type: "system" as const, text: "✓ Model set: claude-sonnet-4-20250514", delay: 300 },
     ],
     className: "",
   },
@@ -77,11 +82,12 @@ const ITEMS = [
     description:
       "Kairo remembers what you've discussed. Resume conversations, reference past work, never repeat yourself.",
     lines: [
-      { type: "command" as const, text: "kairo chat", delay: 200 },
-      { type: "system" as const, text: "╭─ Continuing previous session", delay: 300 },
-      { type: "system" as const, text: "│  Last topic: Refactoring auth", delay: 200 },
-      { type: "system" as const, text: "│  You asked about token management", delay: 200 },
-      { type: "system" as const, text: "╰─ Ready for follow-up", delay: 300 },
+      { type: "command" as const, text: "kairo", delay: 200 },
+      { type: "system" as const, text: "┃ Kairo — gpt-4o", delay: 300 },
+      { type: "system" as const, text: "────────────────────────────────────────────────", delay: 200 },
+      { type: "system" as const, text: "  Continuing previous session", delay: 200 },
+      { type: "system" as const, text: "  Last topic: Refactoring auth", delay: 200 },
+      { type: "system" as const, text: "  12 prior messages in context", delay: 300 },
     ],
     className: "",
   },
@@ -95,7 +101,7 @@ const ITEMS = [
       { type: "system" as const, text: "+ @abhilov/kairo@latest", delay: 300 },
       { type: "system" as const, text: "✓ Installed", delay: 200 },
       { type: "command" as const, text: "kairo --version", delay: 200 },
-      { type: "output" as const, text: "v0.1.0", delay: 200 },
+      { type: "output" as const, text: "v1.2.0", delay: 200 },
     ],
     className: "",
   },
@@ -109,7 +115,7 @@ export default function BentoFeatures() {
       {/* Background — dot grid + violet radial glow for light mode */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-dot-grid opacity-[0.03] dark:opacity-[0.02]" />
-        <div className="absolute top-1/3 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-500/[0.04] to-transparent blur-3xl dark:from-violet-500/[0.03]" />
+        <div className="absolute top-1/3 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-cyan-500/[0.04] to-transparent blur-3xl dark:from-violet-500/[0.03]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

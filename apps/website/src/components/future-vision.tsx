@@ -30,7 +30,7 @@ const ROADMAP_ITEMS = [
       "  → Missing input validation in auth.ts",
       "  → Unused import in utils.ts",
       "",
-      "  Run: kairo fix to resolve",
+      "  \u2713 Resolved with suggested fixes",
     ],
     spanFull: false,
   },
@@ -94,7 +94,7 @@ export default function FutureVision() {
       {/* Background — violet radial glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-dot-grid opacity-[0.03] dark:opacity-[0.04]" />
-        <div className="absolute top-1/4 left-1/2 h-[700px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-500/[0.04] to-transparent blur-3xl dark:from-violet-500/5" />
+        <div className="absolute top-1/4 left-1/2 h-[700px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-cyan-500/[0.04] to-transparent blur-3xl dark:from-cyan-500/5" />
       </div>
 
       {/* Lamp header */}
@@ -106,9 +106,9 @@ export default function FutureVision() {
           transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
           className="flex flex-col items-center pt-12 sm:pt-16"
         >
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/10 bg-violet-500/5 px-3 py-1 mb-4">
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse" />
-            <span className="text-xs font-medium text-violet-500">Coming soon</span>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/10 bg-cyan-500/5 px-3 py-1 mb-4">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-xs font-medium text-cyan-500">Coming soon</span>
           </div>
           <div className="flex justify-center w-full max-w-4xl">
             <TypewriterEffect
@@ -116,11 +116,11 @@ export default function FutureVision() {
                 { text: "The", className: "text-neutral-900 dark:text-white" },
                 { text: "future", className: "text-neutral-900 dark:text-white" },
                 { text: "of", className: "text-neutral-900 dark:text-white" },
-                { text: "terminal", className: "bg-gradient-to-r from-violet-400 to-violet-200 bg-clip-text text-transparent dark:text-transparent" },
-                { text: "AI.", className: "bg-gradient-to-r from-violet-400 to-violet-200 bg-clip-text text-transparent dark:text-transparent" },
+                { text: "terminal", className: "bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent dark:text-transparent" },
+                { text: "AI.", className: "bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent dark:text-transparent" },
               ]}
               className="text-3xl sm:text-4xl font-bold tracking-tight text-center"
-              cursorClassName="bg-violet-400"
+              cursorClassName="bg-cyan-400"
             />
           </div>
           <p className="mt-3 max-w-lg text-base leading-relaxed text-neutral-500 dark:text-neutral-400 text-center">
@@ -189,7 +189,7 @@ export default function FutureVision() {
                           key={li}
                           className={
                             line.startsWith("→")
-                              ? "text-violet-400/70"
+                              ? "text-cyan-400/70"
                               : line.startsWith("✓") || line.startsWith("Result")
                               ? "text-emerald-400/60"
                               : line.startsWith("│") || line.startsWith("╰") || line.startsWith("╭")

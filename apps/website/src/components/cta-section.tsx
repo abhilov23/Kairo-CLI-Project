@@ -17,7 +17,7 @@ export default function CTASection() {
       <Vortex
         particleCount={400}
         rangeY={100}
-        baseHue={260}
+        baseHue={180}
         baseSpeed={0.3}
         rangeSpeed={1.2}
         baseRadius={1}
@@ -29,7 +29,7 @@ export default function CTASection() {
 
       {/* Background grid overlay */}
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.02] dark:opacity-[0.03] z-[1]" />
-      <div className="absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-violet-500/5 to-transparent blur-3xl dark:from-violet-500/8 z-[1]" />
+      <div className="absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-cyan-500/5 to-transparent blur-3xl dark:from-cyan-500/8 z-[1]" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -47,7 +47,7 @@ export default function CTASection() {
             Install Kairo in one command. No account required. Works on macOS, Linux, and Windows.
           </p>
 
-          <div className="mt-8 mx-auto max-w-sm">
+          <div className="mt-8 mx-auto max-w-md">
             <InstallCommand />
           </div>
 
@@ -58,7 +58,7 @@ export default function CTASection() {
               borderRadius="0.75rem"
               className="h-11 rounded-xl bg-foreground/[0.05] text-foreground text-sm font-medium px-6 backdrop-blur-xl border-0 hover:bg-foreground/10 transition-colors"
               containerClassName="!h-11 !w-auto"
-              borderClassName="bg-[radial-gradient(#7c3aed_40%,transparent_60%)]"
+              borderClassName="bg-[radial-gradient(#06b6d4_40%,transparent_60%)]"
             >
               <span className="inline-flex items-center gap-2">
                 <Terminal className="h-4 w-4" />
@@ -73,7 +73,7 @@ export default function CTASection() {
               className="h-11 rounded-xl px-6 text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               <a
-                href="https://github.com/abhilov23/KairoCLI"
+                href="https://github.com/abhilov23/Kairo-CLI-Project"
                 target="_blank"
                 rel="noopener noreferrer"
               >

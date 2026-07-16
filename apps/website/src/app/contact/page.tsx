@@ -41,12 +41,12 @@ export default function ContactPage() {
                 {[
                   {
                     label: "GitHub Issues",
-                    href: "https://github.com/abhilov23/KairoCLI/issues",
+                    href: "https://github.com/abhilov23/Kairo-CLI-Project/issues",
                     desc: "Report bugs or request features",
                   },
                   {
                     label: "GitHub Discussions",
-                    href: "https://github.com/abhilov23/KairoCLI/discussions",
+                    href: "https://github.com/abhilov23/Kairo-CLI-Project/discussions",
                     desc: "Ask questions and share ideas",
                   },
                   {

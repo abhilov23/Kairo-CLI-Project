@@ -6,11 +6,11 @@ import DocsLayout from "../docs-layout";
 export const metadata: Metadata = {
   title: "Providers — Kairo",
   description:
-    "Configure AI providers for Kairo CLI. Set up OpenAI, Anthropic, Google Gemini, or local models via Ollama — with step-by-step setup guides.",
+    "Configure AI providers for Kairo CLI. Set up OpenAI, Anthropic, Groq, NVIDIA, Ollama, Custom endpoints, or the Kairo Gateway — with step-by-step setup guides.",
   openGraph: {
     title: "Providers — Kairo",
     description:
-      "Configure AI providers for Kairo CLI. Set up OpenAI, Anthropic, Google Gemini, or local models via Ollama — with step-by-step setup guides.",
+      "Configure AI providers for Kairo CLI. Set up OpenAI, Anthropic, Groq, NVIDIA, Ollama, Custom endpoints, or the Kairo Gateway — with step-by-step setup guides.",
     images: "/opengraph-image.png",
   },
 };
@@ -20,6 +20,7 @@ interface Provider {
   name: string;
   description: string;
   models: string[];
+  apiKeyEnv: string;
   setup: string[];
   icon: string;
 }
@@ -30,10 +31,11 @@ const PROVIDERS: Provider[] = [
     name: "OpenAI",
     description: "GPT-4o, o-series, and more from OpenAI.",
     models: ["gpt-4o", "gpt-4o-mini", "o3", "o4-mini"],
+    apiKeyEnv: "OPENAI_API_KEY",
     setup: [
       "Get your API key from platform.openai.com",
-      "kairo config set provider openai",
-      "kairo config set api_key sk-...",
+      "Run kairo setup and select option 1 (OpenAI)",
+      "Enter your API key when prompted",
     ],
     icon: "OpenAI",
   },
@@ -41,38 +43,80 @@ const PROVIDERS: Provider[] = [
     id: "anthropic",
     name: "Anthropic",
     description: "Claude models from Anthropic for advanced reasoning.",
-    models: ["claude-sonnet-4", "claude-opus-4", "claude-haiku-4"],
+    models: ["claude-sonnet-4-5", "claude-opus-4", "claude-haiku-4", "claude-sonnet-4"],
+    apiKeyEnv: "ANTHROPIC_API_KEY",
     setup: [
       "Get your API key from console.anthropic.com",
-      "kairo config set provider anthropic",
-      "kairo config set api_key sk-ant-...",
+      "Run kairo setup and select option 2 (Anthropic)",
+      "Enter your API key when prompted",
     ],
     icon: "Anthropic",
   },
   {
-    id: "google",
-    name: "Google",
-    description: "Gemini models from Google AI.",
-    models: ["gemini-2.5-pro", "gemini-2.5-flash"],
+    id: "groq",
+    name: "Groq",
+    description: "Fast inference with Llama, Mixtral, and more via Groq.",
+    models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
+    apiKeyEnv: "GROQ_API_KEY",
     setup: [
-      "Get your API key from aistudio.google.com",
-      "kairo config set provider google",
-      "kairo config set api_key AIza...",
+      "Get your API key from console.groq.com",
+      "Run kairo setup and select option 3 (Groq)",
+      "Enter your Groq API key when prompted",
     ],
-    icon: "Google",
+    icon: "Groq",
   },
   {
-    id: "local",
-    name: "Local Models",
-    description: "Run models locally via Ollama or LM Studio.",
-    models: ["llama-3", "mistral", "codellama", "phi-4"],
+    id: "nvidia",
+    name: "NVIDIA",
+    description: "NVIDIA NIM microservices for accelerated AI inference.",
+    models: ["meta/llama-3.3-70b-instruct", "meta/llama-3.1-405b-instruct", "mistralai/mistral-7b-instruct-v0.3"],
+    apiKeyEnv: "NVIDIA_API_KEY",
     setup: [
-      "Install Ollama (ollama.ai) or LM Studio",
-      "ollama pull llama3",
-      "kairo config set provider local",
-      "kairo config set model llama3",
+      "Get your API key from build.nvidia.com",
+      "Run kairo setup and select option 4 (NVIDIA)",
+      "Enter your NVIDIA API key when prompted",
+    ],
+    icon: "NVIDIA",
+  },
+  {
+    id: "ollama",
+    name: "Ollama (Local)",
+    description: "Run models locally on your machine with Ollama.",
+    models: ["llama3.2", "llama3.1", "mistral", "codellama", "phi-4"],
+    apiKeyEnv: "None (local)",
+    setup: [
+      "Install Ollama from ollama.ai",
+      "Pull a model: ollama pull llama3.2",
+      "Run kairo setup and select option 5 (Ollama)",
+      "Select your model when prompted",
     ],
     icon: "Local",
+  },
+  {
+    id: "custom",
+    name: "Custom Endpoint",
+    description: "Connect to any OpenAI-compatible API endpoint.",
+    models: ["User-defined"],
+    apiKeyEnv: "User-provided",
+    setup: [
+      "Run kairo setup and select option 6 (Custom)",
+      "Enter the base URL of your OpenAI-compatible API",
+      "Enter your API key and model name when prompted",
+    ],
+    icon: "Custom",
+  },
+  {
+    id: "kairo-gateway",
+    name: "Kairo Gateway",
+    description: "Use Kairo's free AI gateway — no API key required.",
+    models: ["Gateway-configured"],
+    apiKeyEnv: "None (fetched from gateway)",
+    setup: [
+      "Log in to your Kairo account: kairo login",
+      "Run kairo setup and select option 7 (Kairo Gateway)",
+      "Provider credentials are fetched automatically from the website",
+    ],
+    icon: "Gateway",
   },
 ];
 
@@ -123,7 +167,7 @@ export default function ProvidersPage() {
                       {provider.models.map((model) => (
                         <span
                           key={model}
-                          className="rounded-lg bg-violet-500/10 px-2.5 py-1 font-mono text-xs text-violet-500 dark:text-violet-400"
+                          className="rounded-lg bg-cyan-500/10 px-2.5 py-1 font-mono text-xs text-cyan-500 dark:text-cyan-400"
                         >
                           {model}
                         </span>
@@ -131,8 +175,18 @@ export default function ProvidersPage() {
                     </div>
                   </div>
 
+                  {/* API Key */}
+                  <div className="mt-4">
+                    <div className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+                      API Key
+                    </div>
+                    <code className="rounded bg-muted px-2 py-1 font-mono text-xs text-foreground">
+                      {provider.apiKeyEnv}
+                    </code>
+                  </div>
+
                   {/* Setup */}
-                  <div className="mt-5">
+                  <div className="mt-4">
                     <div className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
                       Setup
                     </div>
@@ -142,10 +196,10 @@ export default function ProvidersPage() {
                           key={step}
                           className="flex items-start gap-3 text-sm"
                         >
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-[10px] font-medium text-violet-500 dark:text-violet-400">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-[10px] font-medium text-cyan-500 dark:text-cyan-400">
                             {i + 1}
                           </span>
-                          {step.startsWith("kairo") || step.startsWith("ollama") ? (
+                          {step.startsWith("kairo") || step.startsWith("Run") || step.startsWith("Pull") || step.startsWith("Install") ? (
                             <code className="rounded bg-[#0d1117] px-2 py-0.5 font-mono text-xs text-emerald-400/90">
                               $ {step}
                             </code>
@@ -162,13 +216,13 @@ export default function ProvidersPage() {
 
             {/* Switching Providers notice */}
             <section className="mt-8 mb-16">
-              <div className="rounded-xl border border-violet-500/10 bg-violet-500/5 p-5">
-                <h3 className="text-sm font-semibold text-violet-400">
+              <div className="rounded-xl border border-cyan-500/10 bg-cyan-500/5 p-5">
+                <h3 className="text-sm font-semibold text-cyan-400">
                   Switching Providers
                 </h3>
-                <p className="mt-2 text-sm text-violet-400/80">
-                  You can switch providers at any time. Kairo will use the new
-                  provider for all subsequent commands. Previous conversations
+                <p className="mt-2 text-sm text-cyan-400/80">
+                  You can switch providers at any time by running <code className="rounded bg-violet-500/10 px-1.5 py-0.5 font-mono text-xs">kairo setup</code>.
+                  Kairo will use the new provider for all subsequent commands. Previous conversations
                   are preserved.
                 </p>
               </div>

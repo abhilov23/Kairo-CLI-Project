@@ -63,39 +63,39 @@ function InfoBox({ children }: { children: React.ReactNode }) {
 }
 
 const QUICK_COMMANDS = [
-  { cmd: "kairo chat", desc: "Start an AI chat session" },
-  { cmd: "kairo models", desc: "List available AI models" },
-  { cmd: "kairo config", desc: "View or update configuration" },
+  { cmd: "kairo", desc: "Start an interactive AI chat session" },
+  { cmd: "kairo setup", desc: "Configure AI provider and model" },
+  { cmd: "kairo doctor", desc: "Check CLI configuration health" },
   { cmd: "kairo help", desc: "Display help information" },
 ];
 
 const EXAMPLES = [
   {
     title: "Code Review",
-    cmd: "kairo review src/components/button.tsx",
-    desc: "Review a specific file for bugs, security issues, and improvement suggestions.",
+    cmd: "kairo --task \"review the current git diff\"",
+    desc: "Review staged changes for bugs, security issues, and improvement suggestions.",
   },
   {
     title: "Debug Help",
-    cmd: "kairo explain",
-    desc: "Get an explanation of the last error or exception with context from your codebase.",
+    cmd: "kairo --task \"explain this TypeScript error\"",
+    desc: "Get an explanation of errors with context from your codebase.",
   },
   {
     title: "Architecture",
-    cmd: "kairo chat",
+    cmd: "kairo",
     desc: "Discuss design patterns, architecture decisions, and get AI-powered suggestions.",
   },
   {
-    title: "Refactoring",
-    cmd: "kairo fix src/utils/api.ts",
-    desc: "Automatically apply suggested fixes and refactoring to your code.",
+    title: "Scripting",
+    cmd: "kairo --task \"$(cat prompt.txt)\"",
+    desc: "Use kairo in shell scripts for automated tasks and CI pipelines.",
   },
 ];
 
 const FAQS = [
   {
     q: "Do I need an API key?",
-    a: "Yes. Kairo uses your own AI provider API keys. You can configure them with kairo config.",
+    a: "Kairo uses your own AI provider API keys. You can configure them with kairo setup. Alternatively, use the Kairo Gateway (requires a free account) which provides AI access without your own API key.",
   },
   {
     q: "Is Kairo free?",
@@ -122,7 +122,7 @@ const TROUBLESHOOTING = [
   },
   {
     issue: "API key errors",
-    solution: "Run kairo config to verify your provider and API key settings.",
+    solution: "Run kairo doctor to verify your provider and API key settings.",
   },
   {
     issue: "Slow responses",
@@ -149,9 +149,9 @@ export default function DocsPage() {
               </p>
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {[
-                  { label: "Current version", value: "v0.1.0" },
+                  { label: "Current version", value: "v1.2.0" },
                   { label: "License", value: "MIT" },
-                  { label: "Last updated", value: "June 2025" },
+                  { label: "Last updated", value: "July 2026" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl border border-border/40 bg-card/30 p-4">
                     <div className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
@@ -175,8 +175,8 @@ export default function DocsPage() {
               </p>
               <div className="mt-6 space-y-4">
                 <TerminalBlock
-                  command="npm install -g kairo-cli"
-                  lines={["+ kairo-cli@latest", "OK Installed successfully"]}
+                  command="npm install -g @abhilov/kairo"
+                  lines={["+ @abhilov/kairo@latest", "OK Installed successfully"]}
                 />
                 <InfoBox>
                   <strong>Prerequisites:</strong> Node.js 18+ is required. Verify
@@ -195,20 +195,16 @@ export default function DocsPage() {
               </p>
               <div className="mt-6 space-y-4">
                 <TerminalBlock
-                  command="kairo config set provider anthropic"
-                  lines={["OK Provider set to: anthropic"]}
+                  command="kairo setup"
+                  lines={["┌─ Kairo Setup ─────────────────────────────────────", "│  Select AI Provider:", "│    \x1b[32m1.\x1b[0m OpenAI", "│    \x1b[32m2.\x1b[0m Anthropic", "│    \x1b[32m3.\x1b[0m Groq", "└───────────────────────────────────────────────", "✓ Provider set to: openai"]}
                 />
                 <TerminalBlock
-                  command="kairo config set api_key sk-ant-..."
-                  lines={["OK API key configured"]}
-                />
-                <TerminalBlock
-                  command="kairo chat"
+                  command="kairo"
                   lines={[
-                    "~ Kairo - I'm ready",
-                    "|",
-                    "|  What are we building today?",
-                    "~ Type your message to begin",
+                    "┃ Kairo — gpt-4o",
+                    "────────────────────────────────────────────────",
+                    "  What are we building today?",
+                    "  Type /help for commands.",
                   ]}
                 />
               </div>

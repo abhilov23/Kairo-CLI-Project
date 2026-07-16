@@ -117,7 +117,7 @@ export default function AboutContent() {
       {/* ── Section: Mission ── */}
       <section className="relative py-16 sm:py-24">
         {/* Glow */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-violet-500/5 to-transparent blur-3xl dark:from-violet-500/8" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-cyan-500/5 to-transparent blur-3xl dark:from-cyan-500/8" />
 
         <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -200,8 +200,8 @@ export default function AboutContent() {
                   transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : index * 0.05, ease: [0.16, 1, 0.3, 1] }}
                   className="group rounded-2xl border border-border bg-card p-6 sm:p-7 transition-all duration-300 hover:border-muted-foreground/20 hover:shadow-sm"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background group-hover:border-violet-500/20 group-hover:bg-violet-500/5 transition-colors">
-                    <Icon className="h-4 w-4 text-muted-foreground group-hover:text-violet-500 transition-colors" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background group-hover:border-cyan-500/20 group-hover:bg-cyan-500/5 transition-colors">
+                    <Icon className="h-4 w-4 text-muted-foreground group-hover:text-cyan-500 transition-colors" />
                   </div>
                   <h4 className="mt-4 text-base font-semibold tracking-tight text-foreground">
                     {value.title}
@@ -351,7 +351,7 @@ export default function AboutContent() {
                     className="h-10 rounded-xl bg-foreground text-background hover:bg-foreground/90 px-5 text-sm font-medium shadow-sm"
                   >
                     <a
-                      href="https://github.com/abhilov23/KairoCLI"
+                      href="https://github.com/abhilov23/Kairo-CLI-Project"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -411,7 +411,7 @@ export default function AboutContent() {
                     │  chore: update dependencies
                   </div>
                   <div className="text-white/60">
-                    ╰─ <span className="text-violet-400/80">kairo review</span> to check
+                    ╰─ <span className="text-cyan-400/80">kairo --task</span> to check
                   </div>
                   <div className="inline-block h-3.5 w-2 animate-pulse bg-emerald-400/60 mt-2" />
                 </div>

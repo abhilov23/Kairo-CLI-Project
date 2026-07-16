@@ -11,7 +11,7 @@ interface InstallCommandProps {
 }
 
 export default function InstallCommand({
-  command = "npm install -g kairo-cli",
+  command = "npm install -g @abhilov/kairo",
   className,
   variant = "default",
 }: InstallCommandProps) {

@@ -65,11 +65,11 @@ export default function AuthBrandPanel() {
       <div className="absolute inset-0 bg-noise" />
 
       {/* Spotlights */}
-      <div className="absolute top-[-25%] left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-500/10 to-transparent blur-3xl" />
-      <div className="absolute bottom-[-15%] right-[-10%] h-[450px] w-[450px] rounded-full bg-gradient-to-b from-violet-500/5 to-transparent blur-3xl" />
+      <div className="absolute top-[-25%] left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-gradient-to-b from-cyan-500/10 to-transparent blur-3xl" />
+      <div className="absolute bottom-[-15%] right-[-10%] h-[450px] w-[450px] rounded-full bg-gradient-to-b from-cyan-500/5 to-transparent blur-3xl" />
 
       {/* Glow line at panel edge */}
-      <div className="absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-violet-500/15 to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/15 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
